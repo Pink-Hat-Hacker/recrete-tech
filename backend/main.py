@@ -1,20 +1,11 @@
 """
 RecreteTech Backend Proxy
-=========================
-Sits between the React frontend and Anthropic's API so the API key
-is never exposed in the browser bundle.
 
 Setup:
   pip install fastapi uvicorn httpx python-dotenv
 
 Run locally:
   uvicorn main:app --reload --port 8000
-
-Deploy to Render:
-  - Connect this folder as a new "Web Service" on render.com
-  - Set environment variable ANTHROPIC_API_KEY in the Render dashboard
-  - Set environment variable ALLOWED_ORIGIN to your GitHub Pages URL
-    e.g. https://yourusername.github.io
 """
 
 import os
