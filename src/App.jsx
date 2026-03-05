@@ -231,7 +231,7 @@ Optimize for strength compliance, CO2 reduction, and cost. Include 3 realistic s
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:1000,
+          model:"claude-sonnet-4-20250514", max_tokens:4000,
           system: systemPrompt,
           messages:[{ role:"user", content: userMsg }]
         })
