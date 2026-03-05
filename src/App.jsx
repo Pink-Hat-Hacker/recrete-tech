@@ -226,9 +226,7 @@ Respond ONLY with valid JSON, no markdown:
 Optimize for strength compliance, CO2 reduction, and cost. Include 3 realistic suppliers and compliance for ASTM C94, ACI 318, BS EN 206, Local Regulations.`;
 
     try {
-      // In production this hits your FastAPI backend proxy (never expose the API key in the browser).
-      // For local dev, set VITE_API_URL=http://localhost:8000 in .env.local
-      const API_BASE = import.meta.env.VITE_API_URL ?? "https://your-backend.onrender.com";
+      const API_BASE = import.meta.env.VITE_API_URL ?? "https://recrete-backend.onrender.com";
       const res = await fetch(`${API_BASE}/api/optimize`, {
         method:"POST",
         headers:{"Content-Type":"application/json"},
