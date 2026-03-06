@@ -101,8 +101,8 @@ const greenSelect = {
 export default function App() {
   const [form, setForm] = useState({
     strength_mpa: 40, w_b_ratio: 0.42, use_case: "marine_pier",
-    exposure_class: "XS3", location_state: "California",
-    location_city: "Los Angeles", age_days: 28,
+    exposure_class: "XS3", location_state: "North Carolina",
+    location_city: "Durham", age_days: 28,
   });
   const [result, setResult]   = useState(null);
   const [loading, setLoading] = useState(false);
@@ -339,27 +339,17 @@ Optimize for strength compliance, CO2 reduction, and cost. Include 3 realistic s
               </div>
               <div>
                 <label style={label}>Location — State</label>
-                <input name="location_state" type="text" value={form.location_state} onChange={onChange} style={greenInput} placeholder="e.g. California" />
+                <input name="location_state" type="text" value={form.location_state} onChange={onChange} style={greenInput} placeholder="e.g. North Carolina" />
               </div>
               <div>
                 <label style={label}>Location — City</label>
-                <input name="location_city" type="text" value={form.location_city} onChange={onChange} style={greenInput} placeholder="e.g. Los Angeles" />
+                <input name="location_city" type="text" value={form.location_city} onChange={onChange} style={greenInput} placeholder="e.g. Durham" />
               </div>
               <div style={{ gridColumn:"1 / -1" }}>
                 <label style={label}>Cure Age (days)</label>
                 <input name="age_days" type="number" value={form.age_days} onChange={onChange} style={{ ...greenInput, width:"50%" }} min={1} max={365} />
               </div>
 
-            </div>
-
-            {/* Dataset badge */}
-            <div style={{ display:"flex", gap:16, marginTop:20, padding:"12px 16px", background: BG, borderRadius:8, border:`1px solid ${BDR}` }}>
-              {[["Training corpus", `${DS.n.toLocaleString()} samples`], ["Avg strength", `${DS.strength.mean} MPa`], ["Max strength", `${DS.strength.max} MPa`], ["Avg cement", `${DS.cement.mean} kg/m³`]].map(([k,v]) => (
-                <div key={k}>
-                  <div style={{ fontSize:10, color:T3, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.06em" }}>{k}</div>
-                  <div style={{ fontSize:13, fontWeight:600, color:G }}>{v}</div>
-                </div>
-              ))}
             </div>
 
             <button onClick={runOptimization} disabled={loading} style={{

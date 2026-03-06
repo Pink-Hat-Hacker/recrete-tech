@@ -407,6 +407,159 @@ HISTORICAL_PROJECTS = [
     },
 ]
 
+# ── Source 3: Historical project records ──────────────────────────────────────
+EPD_CHUNKS = [
+    {
+        "source_id": "EPD-LEHIGH-OPC-2023",
+        "doc_type": "EPD",
+        "material": "OPC cement",
+        "region": "US",
+        "text": (
+            "Environmental Product Declaration — Lehigh Hanson Type I/II Portland Cement, 2023. "
+            "Declared unit: 1 metric ton of cement. "
+            "Global Warming Potential (GWP, A1-A3): 820 kg CO2e per tonne. "
+            "Acidification: 1.23 kg SO2e. Eutrophication: 0.22 kg N-equiv. "
+            "Primary energy demand: 3,850 MJ. "
+            "Plant location: Union Bridge, Maryland. "
+            "EPD Program Operator: NRMCA. EPD Verification: third-party verified. "
+            "Valid until: 2028."
+        ),
+    },
+    {
+        "source_id": "EPD-HOLCIM-OPC-2023",
+        "doc_type": "EPD",
+        "material": "OPC cement",
+        "region": "US",
+        "text": (
+            "Environmental Product Declaration — Holcim US Type I/II Portland Cement, 2023. "
+            "Declared unit: 1 metric ton of cement. "
+            "Global Warming Potential (GWP, A1-A3): 795 kg CO2e per tonne. "
+            "Plant locations: aggregate of US facilities. "
+            "EPD Program Operator: NRMCA. Third-party verified. "
+            "Clinker-to-cement ratio: 0.88. Supplementary fuel use: 12% alternative fuels. "
+            "Valid until: 2028."
+        ),
+    },
+    {
+        "source_id": "EPD-NRMCA-GGBFS-2022",
+        "doc_type": "EPD",
+        "material": "GGBFS slag",
+        "region": "US",
+        "text": (
+            "Environmental Product Declaration — Ground Granulated Blast Furnace Slag (GGBFS), "
+            "NRMCA Industry-Wide EPD, 2022. "
+            "Declared unit: 1 metric ton of GGBFS. "
+            "Global Warming Potential (GWP, A1-A3): 67 kg CO2e per tonne. "
+            "GGBFS is an industrial byproduct of iron manufacturing — the low GWP reflects "
+            "allocation methodology assigning minimal upstream burden to byproducts. "
+            "Fineness: 400-500 m2/kg (Grade 100/120 per ASTM C989). "
+            "Valid until: 2027."
+        ),
+    },
+    {
+        "source_id": "EPD-HEADWATERS-FLYASH-2022",
+        "doc_type": "EPD",
+        "material": "fly ash",
+        "region": "US",
+        "text": (
+            "Environmental Product Declaration — Fly Ash Class F, "
+            "Headwaters Resources Industry-Wide EPD, 2022. "
+            "Declared unit: 1 metric ton of fly ash. "
+            "Global Warming Potential (GWP, A1-A3): 40 kg CO2e per tonne. "
+            "Fly ash is a coal combustion byproduct — low GWP due to byproduct allocation. "
+            "Loss on ignition (LOI): <6%. Applicable standard: ASTM C618 Class F. "
+            "Valid until: 2027."
+        ),
+    },
+    {
+        "source_id": "EPD-ELKEM-SILICAFUME-2023",
+        "doc_type": "EPD",
+        "material": "silica fume",
+        "region": "US",
+        "text": (
+            "Environmental Product Declaration — Elkem Microsilica (Silica Fume), 2023. "
+            "Declared unit: 1 metric ton of densified silica fume. "
+            "Global Warming Potential (GWP, A1-A3): 20 kg CO2e per tonne. "
+            "Silica fume is a byproduct of silicon and ferrosilicon alloy production. "
+            "Applicable standard: ASTM C1240. SiO2 content: >85%. "
+            "EPD Program Operator: Institut Bauen und Umwelt (IBU). "
+            "Valid until: 2028."
+        ),
+    },
+    {
+        "source_id": "EPD-VULCAN-COARSEAGG-2023",
+        "doc_type": "EPD",
+        "material": "coarse aggregate",
+        "region": "US",
+        "text": (
+            "Environmental Product Declaration — Vulcan Materials Crushed Stone Coarse Aggregate, 2023. "
+            "Declared unit: 1 metric ton of crushed stone. "
+            "Global Warming Potential (GWP, A1-A3): 4.8 kg CO2e per tonne. "
+            "Includes quarrying, crushing, screening, and transport to plant gate. "
+            "Rock types: granite, limestone, trap rock (varies by region). "
+            "EPD Program Operator: NSSGA. Third-party verified. "
+            "Valid until: 2028."
+        ),
+    },
+    {
+        "source_id": "EPD-MARTIN-FINEAGG-2023",
+        "doc_type": "EPD",
+        "material": "fine aggregate",
+        "region": "US",
+        "text": (
+            "Environmental Product Declaration — Martin Marietta Natural Sand Fine Aggregate, 2023. "
+            "Declared unit: 1 metric ton of natural sand. "
+            "Global Warming Potential (GWP, A1-A3): 2.6 kg CO2e per tonne. "
+            "Includes extraction, washing, and transport to plant gate. "
+            "Fineness modulus: 2.3-3.1. Applicable standard: ASTM C33. "
+            "EPD Program Operator: NSSGA. Third-party verified. "
+            "Valid until: 2028."
+        ),
+    },
+    {
+        "source_id": "NRMCA-BASELINE-CO2-2021",
+        "doc_type": "EPD",
+        "material": "industry baseline",
+        "region": "US",
+        "text": (
+            "NRMCA Concrete CO2 Fact Sheet — Industry Baseline Emission Factors 2021. "
+            "These are US industry-average values for Scope A1-A3 (cradle to plant gate). "
+            "Portland cement OPC: 820-900 kg CO2e per tonne (average 860). "
+            "GGBFS slag: 52-83 kg CO2e per tonne (average 67). "
+            "Fly ash Class F: 27-54 kg CO2e per tonne (average 40). "
+            "Silica fume: 14-28 kg CO2e per tonne (average 20). "
+            "Coarse aggregate: 3.5-6.5 kg CO2e per tonne (average 4.8). "
+            "Fine aggregate: 1.8-3.5 kg CO2e per tonne (average 2.6). "
+            "Mixing water: 0.3 kg CO2e per tonne. "
+            "HRWR superplasticizer: 3,200-3,800 kg CO2e per tonne. "
+            "A concrete mix with 40% SCM replacement typically achieves 30-40% GWP reduction "
+            "vs. 100% OPC baseline of approximately 340 kg CO2e per m3."
+        ),
+    },
+]
+
+def ingest_epd_chunks():
+    print("\n[4/4] Ingesting EPD sustainability documents...")
+    texts = [c["text"] for c in EPD_CHUNKS]
+    vectors = embed(texts)
+
+    points = [
+        PointStruct(
+            id=chunk_id(c["text"]),
+            vector=vec,
+            payload={
+                "doc_type":   c["doc_type"],
+                "source_id":  c["source_id"],
+                "material":   c["material"],
+                "region":     c["region"],
+                "chunk_text": c["text"],
+            }
+        )
+        for c, vec in zip(EPD_CHUNKS, vectors)
+    ]
+    upsert_points(points)
+    print(f"  Upserted {len(points)} EPD vectors")
+
 
 def ingest_historical_projects():
     print("\n[3/3] Ingesting historical project records...")
@@ -447,8 +600,10 @@ if __name__ == "__main__":
         print(f"\n[1/3] WARNING: {csv_path} not found — skipping CSV ingestion")
         print("  Place concrete.csv in the project root and re-run to ingest dataset rows.")
 
-    ingest_aci_chunks()
-    ingest_historical_projects()
+    #ingest_aci_chunks()
+    #ingest_historical_projects()
+    ingest_epd_chunks()
+
 
     count = qdrant_client.count(collection_name=COLLECTION).count
     print(f"\n✅ Ingestion complete. Total vectors in '{COLLECTION}': {count}")
