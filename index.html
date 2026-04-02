@@ -2,13 +2,3654 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/recrete-tech/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="RecreteTech — AI-Powered Concrete Mix Optimization" />
-    <title>RecreteTech</title>
+    <title>Recrete Tech — Prototype V3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --ink: #0f1a12;
+        --ink-2: #2d3d31;
+        --ink-3: #556a5a;
+        --bg: #f4f1ea;
+        --bg-2: #edeae1;
+        --bg-3: #e3dfd4;
+        --green: #1a6b3a;
+        --green-light: #d4eadb;
+        --green-mid: #4a9965;
+        --amber: #b85c00;
+        --amber-light: #fdecd6;
+        --red: #991f1f;
+        --red-light: #fde8e8;
+        --blue: #1a3d6b;
+        --blue-light: #dde8f5;
+        --border: rgba(15, 26, 18, 0.12);
+        --border-strong: rgba(15, 26, 18, 0.22);
+        --shadow:
+          0 1px 3px rgba(15, 26, 18, 0.08), 0 4px 16px rgba(15, 26, 18, 0.04);
+        --shadow-lg:
+          0 4px 24px rgba(15, 26, 18, 0.12), 0 1px 4px rgba(15, 26, 18, 0.06);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        font-size: 14px;
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      /* HEADER */
+      header {
+        background: var(--ink);
+        color: var(--bg);
+        padding: 0 32px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .logo-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--green-mid);
+        border-radius: 50%;
+      }
+      .header-badge {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 3px 10px;
+        border-radius: 20px;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      /* STEP INDICATOR */
+      .step-bar {
+        background: var(--bg-2);
+        border-bottom: 1px solid var(--border);
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        gap: 0;
+        height: 44px;
+      }
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 20px 0 0;
+        font-size: 12px;
+        color: var(--ink-3);
+        cursor: pointer;
+        position: relative;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+      .step:not(:last-child)::after {
+        content: "›";
+        position: absolute;
+        right: 6px;
+        color: var(--border-strong);
+      }
+      .step.active {
+        color: var(--green);
+        font-weight: 500;
+      }
+      .step.done {
+        color: var(--ink-2);
+      }
+      .step-num {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1.5px solid currentColor;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        flex-shrink: 0;
+      }
+      .step.active .step-num {
+        background: var(--green);
+        border-color: var(--green);
+        color: white;
+      }
+      .step.done .step-num {
+        background: var(--ink-2);
+        border-color: var(--ink-2);
+        color: white;
+        font-size: 10px;
+      }
+
+      /* MAIN LAYOUT */
+      .app {
+        display: flex;
+        min-height: calc(100vh - 96px);
+      }
+      .sidebar {
+        width: 320px;
+        flex-shrink: 0;
+        background: white;
+        border-right: 1px solid var(--border);
+        padding: 24px;
+        overflow-y: auto;
+        max-height: calc(100vh - 96px);
+        position: sticky;
+        top: 96px;
+      }
+      .main {
+        flex: 1;
+        padding: 28px 32px;
+        overflow-y: auto;
+      }
+
+      /* SCREENS */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+      }
+
+      /* FORMS */
+      .form-section {
+        margin-bottom: 24px;
+      }
+      .form-section-title {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .field {
+        margin-bottom: 14px;
+      }
+      .field label {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-2);
+        margin-bottom: 5px;
+      }
+      .field select,
+      .field input[type="text"],
+      .field input[type="number"] {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--border-strong);
+        border-radius: 6px;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.15s;
+        appearance: none;
+      }
+      .field select:focus,
+      .field input:focus {
+        border-color: var(--green);
+      }
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .field-hint {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-top: 4px;
+      }
+      .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .slider-row input[type="range"] {
+        flex: 1;
+        accent-color: var(--green);
+        height: 4px;
+        cursor: pointer;
+      }
+      .slider-val {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        min-width: 38px;
+        text-align: right;
+        color: var(--ink-2);
+      }
+
+      /* EXPOSURE CLASS CARDS */
+      .exposure-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .exposure-card {
+        border: 1.5px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 10px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: var(--bg);
+      }
+      .exposure-card:hover {
+        border-color: var(--green-mid);
+      }
+      .exposure-card.selected {
+        border-color: var(--green);
+        background: var(--green-light);
+      }
+      .exposure-card .ec-code {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--green);
+      }
+      .exposure-card .ec-desc {
+        font-size: 10px;
+        color: var(--ink-3);
+        line-height: 1.3;
+        margin-top: 2px;
+      }
+
+      /* USE CASE PILLS */
+      .use-case-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .use-pill {
+        padding: 5px 12px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: var(--bg);
+        white-space: nowrap;
+      }
+      .use-pill:hover {
+        border-color: var(--green-mid);
+      }
+      .use-pill.selected {
+        border-color: var(--green);
+        background: var(--green-light);
+        color: var(--green);
+        font-weight: 500;
+      }
+
+      /* BUTTONS */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s;
+        text-decoration: none;
+      }
+      .btn-primary {
+        background: var(--ink);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: var(--ink-2);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+      .btn-green {
+        background: var(--green);
+        color: white;
+      }
+      .btn-green:hover {
+        background: #145a30;
+        transform: translateY(-1px);
+      }
+      .btn-outline {
+        background: white;
+        color: var(--ink);
+        border: 1px solid var(--border-strong);
+      }
+      .btn-outline:hover {
+        background: var(--bg-2);
+      }
+      .btn-sm {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+      .btn-full {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* ASTM BADGE */
+      .astm-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .astm-pass {
+        background: var(--green-light);
+        color: var(--green);
+        border: 1px solid rgba(26, 107, 58, 0.2);
+      }
+      .astm-warn {
+        background: var(--amber-light);
+        color: var(--amber);
+        border: 1px solid rgba(184, 92, 0, 0.2);
+      }
+
+      /* RESULT CARDS */
+      .result-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        gap: 16px;
+      }
+      .result-title {
+        font-family: "Roboto", sans-serif;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+      }
+      .result-subtitle {
+        font-size: 13px;
+        color: var(--ink-3);
+        margin-top: 4px;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .metric-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        box-shadow: var(--shadow);
+      }
+      .metric-label {
+        font-size: 11px;
+        color: var(--ink-3);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 6px;
+      }
+      .metric-value {
+        font-family: "Roboto", sans-serif;
+        font-size: 26px;
+        font-weight: 500;
+        line-height: 1;
+        color: var(--ink);
+      }
+      .metric-unit {
+        font-size: 12px;
+        color: var(--ink-3);
+        margin-top: 4px;
+      }
+      .metric-delta {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 11px;
+        margin-top: 6px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-family: "DM Mono", monospace;
+      }
+      .delta-green {
+        background: var(--green-light);
+        color: var(--green);
+      }
+      .delta-red {
+        background: var(--red-light);
+        color: var(--red);
+      }
+      .delta-amber {
+        background: var(--amber-light);
+        color: var(--amber);
+      }
+
+      /* MIX TABLE */
+      .section-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .section-card-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .section-card-title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .section-card-body {
+        padding: 0;
+      }
+      .mix-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .mix-table th {
+        padding: 10px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+      }
+      .mix-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        vertical-align: middle;
+      }
+      .mix-table tr:last-child td {
+        border-bottom: none;
+      }
+      .mix-table tr:hover td {
+        background: var(--bg);
+      }
+      .material-name {
+        font-weight: 500;
+      }
+      .material-tag {
+        display: inline-block;
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        margin-left: 6px;
+        font-family: "DM Mono", monospace;
+        vertical-align: middle;
+      }
+      .tag-scm {
+        background: var(--green-light);
+        color: var(--green);
+      }
+      .tag-local {
+        background: var(--blue-light);
+        color: var(--blue);
+      }
+      .tag-opt {
+        background: var(--amber-light);
+        color: var(--amber);
+      }
+      .qty-input {
+        width: 80px;
+        padding: 5px 8px;
+        border: 1px solid var(--border-strong);
+        border-radius: 5px;
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        background: var(--bg);
+        color: var(--ink);
+        text-align: right;
+      }
+      .qty-input:focus {
+        outline: none;
+        border-color: var(--green);
+      }
+      .carbon-bar-bg {
+        background: var(--bg-3);
+        border-radius: 3px;
+        height: 6px;
+        flex: 1;
+        min-width: 60px;
+      }
+      .carbon-bar {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--green-mid);
+        transition: width 0.4s ease;
+      }
+      .carbon-bar.high {
+        background: var(--amber);
+      }
+      .carbon-bar.very-high {
+        background: var(--red);
+      }
+
+      /* CARBON COMPARISON */
+      .carbon-compare {
+        padding: 16px 18px;
+      }
+      .compare-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .compare-label {
+        font-size: 12px;
+        min-width: 120px;
+        color: var(--ink-2);
+      }
+      .compare-bar-wrap {
+        flex: 1;
+      }
+      .compare-bar-bg {
+        background: var(--bg-3);
+        border-radius: 4px;
+        height: 10px;
+      }
+      .compare-bar-fill {
+        height: 10px;
+        border-radius: 4px;
+        transition: width 0.6s ease;
+      }
+      .bar-optimized {
+        background: var(--green-mid);
+      }
+      .bar-baseline {
+        background: var(--ink-3);
+      }
+      .compare-val {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        min-width: 80px;
+        text-align: right;
+        color: var(--ink-2);
+      }
+
+      /* SUPPLIER SECTION */
+      .supplier-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 16px;
+      }
+      .supplier-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        background: var(--bg);
+        position: relative;
+      }
+      .supplier-name {
+        font-weight: 500;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+      .supplier-meta {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-bottom: 6px;
+      }
+      .supplier-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .supplier-distance {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--green);
+        background: var(--green-light);
+        padding: 2px 7px;
+        border-radius: 4px;
+      }
+      .supplier-local-badge {
+        font-size: 9px;
+        font-weight: 500;
+        background: var(--blue-light);
+        color: var(--blue);
+        padding: 1px 6px;
+        border-radius: 3px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      /* RATIONALE PANEL */
+      .rationale-body {
+        padding: 16px 18px;
+      }
+      .rationale-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--amber);
+        background: var(--amber-light);
+        border: 1px solid rgba(184, 92, 0, 0.15);
+        padding: 3px 10px;
+        border-radius: 4px;
+        margin-bottom: 12px;
+      }
+      .rationale-text {
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--ink-2);
+      }
+      .rationale-text p {
+        margin-bottom: 10px;
+      }
+      .rationale-text p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* COMPLIANCE TABLE */
+      .compliance-row {
+        display: flex;
+        align-items: center;
+        padding: 10px 18px;
+        border-bottom: 1px solid var(--border);
+        gap: 12px;
+      }
+      .compliance-row:last-child {
+        border-bottom: none;
+      }
+      .compliance-check {
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .compliance-rule {
+        font-size: 12px;
+        flex: 1;
+      }
+      .compliance-source {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--ink-3);
+      }
+      .compliance-val {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .val-pass {
+        color: var(--green);
+      }
+      .val-warn {
+        color: var(--amber);
+      }
+
+      /* LOADING ANIMATION */
+      .loading-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(244, 241, 234, 0.85);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 16px;
+        backdrop-filter: blur(2px);
+      }
+      .loading-overlay.show {
+        display: flex;
+      }
+      .loading-box {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 32px 40px;
+        text-align: center;
+        box-shadow: var(--shadow-lg);
+        max-width: 320px;
+        width: 90%;
+      }
+      .loading-spinner {
+        width: 36px;
+        height: 36px;
+        border: 2px solid var(--border);
+        border-top-color: var(--green);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 16px;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loading-title {
+        font-family: "Roboto", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+      .loading-steps {
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+      .loading-step {
+        padding: 2px 0;
+        transition: color 0.3s;
+      }
+      .loading-step.done {
+        color: var(--green);
+      }
+      .loading-step.active {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      /* TAGS */
+      .pill-tag {
+        display: inline-block;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-family: "DM Mono", monospace;
+      }
+
+      /* PAGE TITLE */
+      .page-title {
+        font-family: "Roboto", sans-serif;
+        font-size: 26px;
+        font-weight: 300;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+      .page-subtitle {
+        font-size: 13px;
+        color: var(--ink-3);
+        margin-bottom: 28px;
+      }
+
+      /* SIDEBAR SUMMARY (screen 2+) */
+      .summary-block {
+        background: var(--bg-2);
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 16px;
+      }
+      .summary-block-title {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: 8px;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        padding: 3px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .summary-row:last-child {
+        border-bottom: none;
+      }
+      .summary-row .key {
+        color: var(--ink-3);
+      }
+      .summary-row .val {
+        font-weight: 500;
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+      }
+
+      /* STRENGTH CONFIDENCE */
+      .strength-conf {
+        margin-top: 4px;
+        font-size: 11px;
+        color: var(--ink-3);
+      }
+      .conf-bar-wrap {
+        margin-top: 8px;
+      }
+      .conf-bar-track {
+        background: var(--bg-3);
+        height: 8px;
+        border-radius: 4px;
+        position: relative;
+      }
+      .conf-range {
+        position: absolute;
+        height: 8px;
+        border-radius: 4px;
+        background: var(--green-light);
+        border: 1.5px solid var(--green-mid);
+      }
+      .conf-point {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--green);
+        border-radius: 50%;
+        top: -1px;
+        transform: translateX(-50%);
+        border: 2px solid white;
+        box-shadow: 0 0 0 1px var(--green);
+      }
+
+      /* PDF MODAL */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 26, 18, 0.4);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(2px);
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal {
+        background: white;
+        border-radius: 12px;
+        padding: 28px 32px;
+        max-width: 440px;
+        width: 90%;
+        box-shadow: var(--shadow-lg);
+      }
+      .modal-title {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      .modal-sub {
+        font-size: 12px;
+        color: var(--ink-3);
+        margin-bottom: 20px;
+      }
+      .modal-checklist {
+        list-style: none;
+        margin-bottom: 24px;
+      }
+      .modal-checklist li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+      }
+      .modal-checklist li:last-child {
+        border-bottom: none;
+      }
+      .modal-check {
+        width: 16px;
+        height: 16px;
+        background: var(--green-light);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--green);
+        font-size: 10px;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      /* STRENGTH VISUAL */
+      .gauge-wrap {
+        position: relative;
+        display: inline-block;
+      }
+      .strength-big {
+        font-family: "Roboto", sans-serif;
+        font-size: 42px;
+        font-weight: 300;
+        line-height: 1;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .metric-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .sidebar {
+          width: 280px;
+        }
+      }
+
+      /* EDIT WARNING */
+      .edit-warning {
+        display: none;
+        background: var(--amber-light);
+        border: 1px solid rgba(184, 92, 0, 0.2);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 12px;
+        color: var(--amber);
+        margin-top: 8px;
+        gap: 6px;
+        align-items: center;
+      }
+      .edit-warning.show {
+        display: flex;
+      }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .icon-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .dot-green {
+        background: var(--green-mid);
+      }
+      .dot-amber {
+        background: var(--amber);
+      }
+      .dot-red {
+        background: var(--red);
+      }
+
+      .info-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+
+      /* Scroll fade in */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-up {
+        animation: fadeUp 0.4s ease forwards;
+      }
+      .fade-up-2 {
+        animation: fadeUp 0.4s 0.1s ease forwards;
+        opacity: 0;
+      }
+      .fade-up-3 {
+        animation: fadeUp 0.4s 0.2s ease forwards;
+        opacity: 0;
+      }
+      .fade-up-4 {
+        animation: fadeUp 0.4s 0.3s ease forwards;
+        opacity: 0;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <header>
+      <div class="logo">
+        RECRETE TECH
+      </div>
+      <div class="header-badge">PROTOTYPE V3</div>
+    </header>
+
+    <div class="step-bar">
+      <div class="step done" onclick="goToScreen(1)" id="step1-tab">
+        <div class="step-num">✓</div>
+        Project Setup
+      </div>
+      <div class="step active" onclick="goToScreen(2)" id="step2-tab">
+        <div class="step-num">2</div>
+        Optimized Mix
+      </div>
+      <div class="step" onclick="goToScreen(3)" id="step3-tab">
+        <div class="step-num">3</div>
+        Edit & Analyze
+      </div>
+      <div class="step" onclick="goToScreen(4)" id="step4-tab">
+        <div class="step-num">4</div>
+        Export Report
+      </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <div class="loading-title">Optimizing mix design</div>
+        <div class="loading-steps">
+          <div class="loading-step" id="ls1">
+            → Checking ASTM constraints...
+          </div>
+          <div class="loading-step" id="ls2">
+            → Running ML strength predictor...
+          </div>
+          <div class="loading-step" id="ls3">→ Querying local suppliers...</div>
+          <div class="loading-step" id="ls4">
+            → Minimizing embodied carbon...
+          </div>
+          <div class="loading-step" id="ls5">
+            → Generating engineering rationale...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="pdfModal">
+      <div class="modal">
+        <div class="modal-title">Generate Mix Design Report</div>
+        <div class="modal-sub">
+          PDF formatted for supplier submission — Bridge Deck, New Haven CT
+        </div>
+        <ul class="modal-checklist">
+          <li>
+            <div class="modal-check">✓</div>
+            Final mix proportions (kg/m³)
+          </li>
+          <li>
+            <div class="modal-check">✓</div>
+            28-day performance specifications
+          </li>
+          <li>
+            <div class="modal-check">✓</div>
+            ASTM compliance table (W2 exposure)
+          </li>
+          <li>
+            <div class="modal-check">✓</div>
+            Carbon footprint breakdown vs. baseline
+          </li>
+          <li>
+            <div class="modal-check">✓</div>
+            Cost estimate by material
+          </li>
+          <li>
+            <div class="modal-check">✓</div>
+            Local supplier recommendations
+          </li>
+          <li>
+            <div class="modal-check">✓</div>
+            AI-assisted engineering rationale
+          </li>
+        </ul>
+        <div class="modal-actions">
+          <button class="btn btn-outline btn-sm" onclick="closePdfModal()">
+            Cancel
+          </button>
+          <button class="btn btn-green btn-sm" onclick="simulatePdfDownload()">
+            ⬇ Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="app">
+      <!-- ====== SIDEBAR ====== -->
+      <div class="sidebar" id="sidebar">
+        <!-- Screen 1 sidebar: form -->
+        <div id="sidebar-screen1">
+          <div style="margin-bottom: 20px">
+            <div class="page-title" style="font-size: 18px">New Mix Design</div>
+            <div style="font-size: 12px; color: var(--ink-3)">
+              Structural Project Engineer
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Project</div>
+            <div class="field">
+              <label>Project name</label>
+              <input
+                type="text"
+                value="I-95 Bridge Deck, Span 4"
+                id="f-project"
+              />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>State</label>
+                <select id="f-state">
+                  <option>Connecticut</option>
+                  <option>Massachusetts</option>
+                  <option>New York</option>
+                  <option>New Jersey</option>
+                  <option>Rhode Island</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>City</label>
+                <select id="f-city">
+                  <option>New Haven</option>
+                  <option>Hartford</option>
+                  <option>Bridgeport</option>
+                  <option>Stamford</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Performance</div>
+            <div class="field">
+              <label>Target compressive strength</label>
+              <div class="slider-row">
+                <input
+                  type="range"
+                  min="17"
+                  max="70"
+                  value="35"
+                  id="f-strength"
+                  oninput="
+                    document.getElementById('strength-val').textContent =
+                      this.value + ' MPa'
+                  "
+                />
+                <div class="slider-val" id="strength-val">35 MPa</div>
+              </div>
+              <div class="field-hint">Corresponds to ~5000 psi (34.5 MPa)</div>
+            </div>
+            <div class="field">
+              <label>Water-to-binder ratio (max)</label>
+              <div class="slider-row">
+                <input
+                  type="range"
+                  min="0.30"
+                  max="0.65"
+                  step="0.01"
+                  value="0.45"
+                  id="f-wb"
+                  oninput="
+                    document.getElementById('wb-val').textContent = this.value
+                  "
+                />
+                <div class="slider-val" id="wb-val">0.45</div>
+              </div>
+              <div class="field-hint">ASTM W2 exposure limits to 0.50 max</div>
+            </div>
+            <div class="field">
+              <label>Design cure age</label>
+              <select id="f-age">
+                <option>7 days</option>
+                <option selected>28 days</option>
+                <option>56 days</option>
+                <option>90 days</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Exposure class</div>
+            <div class="exposure-grid">
+              <div
+                class="exposure-card selected"
+                onclick="selectExposure(this, 'W2')"
+              >
+                <div class="ec-code">W2</div>
+                <div class="ec-desc">Moderate water exposure, freeze-thaw</div>
+              </div>
+              <div class="exposure-card" onclick="selectExposure(this, 'W0')">
+                <div class="ec-code">W0</div>
+                <div class="ec-desc">Dry, not exposed to weather</div>
+              </div>
+              <div class="exposure-card" onclick="selectExposure(this, 'S1')">
+                <div class="ec-code">S1</div>
+                <div class="ec-desc">Moderate sulfate exposure</div>
+              </div>
+              <div class="exposure-card" onclick="selectExposure(this, 'S2')">
+                <div class="ec-code">S2</div>
+                <div class="ec-desc">Severe sulfate, seawater</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Use case</div>
+            <div class="use-case-grid">
+              <div class="use-pill selected" onclick="selectUse(this)">
+                Bridge deck
+              </div>
+              <div class="use-pill" onclick="selectUse(this)">
+                Structural slab
+              </div>
+              <div class="use-pill" onclick="selectUse(this)">Pavement</div>
+              <div class="use-pill" onclick="selectUse(this)">
+                Mass concrete
+              </div>
+              <div class="use-pill" onclick="selectUse(this)">Marine</div>
+              <div class="use-pill" onclick="selectUse(this)">Precast</div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">SCM preferences</div>
+            <div class="field">
+              <label>Max SCM replacement (%)</label>
+              <div class="slider-row">
+                <input
+                  type="range"
+                  min="0"
+                  max="70"
+                  value="50"
+                  id="f-scm"
+                  oninput="
+                    document.getElementById('scm-val').textContent =
+                      this.value + '%'
+                  "
+                />
+                <div class="slider-val" id="scm-val">50%</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Prioritize</label>
+              <select>
+                <option selected>Minimize carbon (primary)</option>
+                <option>Minimize cost (primary)</option>
+                <option>Balance carbon + cost</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn btn-green btn-full" onclick="runOptimization()">
+            ⚡ Optimize Mix Design
+          </button>
+        </div>
+
+        <!-- Screen 2+ sidebar: summary -->
+        <div id="sidebar-results" style="display: none">
+          <div
+            style="
+              margin-bottom: 16px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            "
+          >
+            <div>
+              <div
+                style="
+                  font-family: &quot;Roboto&quot;, sans-serif;
+                  font-size: 15px;
+                  font-weight: 500;
+                "
+              >
+                I-95 Bridge Deck
+              </div>
+              <div style="font-size: 11px; color: var(--ink-3)">
+                New Haven, CT · W2 exposure
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="goToScreen(1)">
+              Edit
+            </button>
+          </div>
+
+          <div class="summary-block">
+            <div class="summary-block-title">Design parameters</div>
+            <div class="summary-row">
+              <span class="key">Target</span
+              ><span class="val">35 MPa @ 28d</span>
+            </div>
+            <div class="summary-row">
+              <span class="key">Max w/b</span><span class="val">0.45</span>
+            </div>
+            <div class="summary-row">
+              <span class="key">Exposure</span
+              ><span class="val">W2 (ACI 318)</span>
+            </div>
+            <div class="summary-row">
+              <span class="key">Use</span><span class="val">Bridge deck</span>
+            </div>
+          </div>
+
+          <div class="summary-block">
+            <div class="summary-block-title">Predicted performance</div>
+            <div class="summary-row">
+              <span class="key">Strength</span
+              ><span class="val" id="sb-strength">38.4 MPa</span>
+            </div>
+            <div class="summary-row">
+              <span class="key">w/cm actual</span
+              ><span class="val" id="sb-wb">0.42</span>
+            </div>
+            <div class="summary-row">
+              <span class="key">Unit weight</span
+              ><span class="val">2,347 kg/m³</span>
+            </div>
+          </div>
+
+          <div class="summary-block">
+            <div class="summary-block-title">Carbon vs. baseline</div>
+            <div style="margin-bottom: 8px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 11px;
+                  color: var(--ink-3);
+                  margin-bottom: 4px;
+                "
+              >
+                <span>This mix</span><span id="sb-carbon">241 kgCO₂e/m³</span>
+              </div>
+              <div
+                style="background: var(--bg-3); border-radius: 3px; height: 6px"
+              >
+                <div
+                  id="sb-carbon-bar"
+                  style="
+                    width: 60%;
+                    height: 6px;
+                    border-radius: 3px;
+                    background: var(--green-mid);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 11px;
+                  color: var(--ink-3);
+                  margin-bottom: 4px;
+                "
+              >
+                <span>OPC baseline</span><span>402 kgCO₂e/m³</span>
+              </div>
+              <div
+                style="background: var(--bg-3); border-radius: 3px; height: 6px"
+              >
+                <div
+                  style="
+                    width: 100%;
+                    height: 6px;
+                    border-radius: 3px;
+                    background: var(--ink-3);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div style="margin-top: 10px; text-align: center">
+              <span class="metric-delta delta-green" id="sb-saving"
+                >↓ 40% less carbon</span
+              >
+            </div>
+          </div>
+
+          <div class="summary-block">
+            <div class="summary-block-title">Cost estimate</div>
+            <div class="summary-row">
+              <span class="key">Materials</span
+              ><span class="val" id="sb-cost">$118/m³</span>
+            </div>
+            <div class="summary-row">
+              <span class="key">vs. baseline</span
+              ><span
+                class="val delta-green"
+                style="color: var(--green)"
+                id="sb-costsave"
+                >−$9/m³</span
+              >
+            </div>
+          </div>
+
+          <button
+            class="btn btn-green btn-full"
+            style="margin-top: 8px"
+            onclick="openPdfModal()"
+          >
+            ⬇ Export PDF Report
+          </button>
+        </div>
+      </div>
+
+      <!-- ====== MAIN CONTENT ====== -->
+      <div class="main">
+        <!-- SCREEN 1: Project Setup (confirmation state) -->
+        <div class="screen" id="screen1">
+          <div class="page-title">Project Setup</div>
+          <div class="page-subtitle">
+            Configure your mix design parameters in the panel to the left, then
+            optimize.
+          </div>
+          <div class="section-card" style="max-width: 560px">
+            <div class="section-card-header">
+              <div class="section-card-title">How it works</div>
+            </div>
+            <div
+              style="
+                padding: 18px;
+                font-size: 13px;
+                color: var(--ink-2);
+                line-height: 1.7;
+              "
+            >
+              <p style="margin-bottom: 10px">
+                Recrete uses a machine learning model trained on 1,030
+                laboratory concrete mix samples to predict compressive strength
+                and optimize mix proportions.
+              </p>
+              <p style="margin-bottom: 10px">
+                ASTM compliance is enforced through hard-coded constraint tables
+                — not inferred by ML. The system then minimizes embodied carbon
+                while meeting all performance and regulatory requirements.
+              </p>
+              <p>
+                Regional supplier availability is factored into optimization to
+                minimize transport emissions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 2: Optimized Mix Result -->
+        <div class="screen active" id="screen2">
+          <div class="result-header fade-up">
+            <div>
+              <div class="result-title">Optimized Mix Design</div>
+              <div class="result-subtitle">
+                ML-optimized · Low-carbon · W2 compliant · New Haven, CT
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+              "
+            >
+              <div class="astm-badge astm-pass">
+                ✓ ASTM W2 · ACI 318-19 §19.3.2
+              </div>
+              <div class="astm-badge astm-pass">✓ C150 Type I/II</div>
+            </div>
+          </div>
+
+          <div class="metric-row fade-up-2">
+            <div class="metric-card">
+              <div class="metric-label">Predicted strength</div>
+              <div class="metric-value">38.4</div>
+              <div class="metric-unit">MPa @ 28 days</div>
+              <div class="conf-bar-wrap">
+                <div class="conf-bar-track" style="margin-top: 8px">
+                  <div class="conf-range" style="left: 24%; width: 35%"></div>
+                  <div class="conf-point" style="left: 41%"></div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 10px;
+                    color: var(--ink-3);
+                    margin-top: 3px;
+                  "
+                >
+                  <span>34.1</span
+                  ><span style="color: var(--green); font-weight: 500"
+                    >38.4</span
+                  ><span>42.7</span>
+                </div>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Embodied carbon</div>
+              <div class="metric-value">241</div>
+              <div class="metric-unit">kgCO₂e per m³</div>
+              <div class="metric-delta delta-green">↓ 40% vs. OPC baseline</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Material cost</div>
+              <div class="metric-value">$118</div>
+              <div class="metric-unit">per m³ (est.)</div>
+              <div class="metric-delta delta-green">↓ $9 vs. baseline</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">w/cm ratio</div>
+              <div class="metric-value">0.42</div>
+              <div class="metric-unit">actual (max 0.45)</div>
+              <div class="metric-delta delta-green">✓ Within ACI limits</div>
+            </div>
+          </div>
+
+          <div class="two-col fade-up-3">
+            <!-- MIX TABLE -->
+            <div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <div class="section-card-title">
+                    <span class="icon-dot dot-green"></span>
+                    Mix proportions (kg/m³)
+                  </div>
+                  <div style="font-size: 11px; color: var(--ink-3)">
+                    ACI 211.1 basis
+                  </div>
+                </div>
+                <table class="mix-table">
+                  <thead>
+                    <tr>
+                      <th>Component</th>
+                      <th style="text-align: right">kg/m³</th>
+                      <th style="text-align: right">kgCO₂e</th>
+                      <th>Carbon</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span class="material-name">OPC Cement</span
+                        ><span class="material-tag tag-opt">Type I/II</span>
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        218
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          color: var(--amber);
+                        "
+                      >
+                        185
+                      </td>
+                      <td>
+                        <div
+                          style="display: flex; align-items: center; gap: 6px"
+                        >
+                          <div class="carbon-bar-bg">
+                            <div
+                              class="carbon-bar high"
+                              style="width: 77%"
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="material-name">GGBS (Slag)</span
+                        ><span class="material-tag tag-scm">SCM</span
+                        ><span class="material-tag tag-local">Local</span>
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        160
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          color: var(--green);
+                        "
+                      >
+                        11
+                      </td>
+                      <td>
+                        <div
+                          style="display: flex; align-items: center; gap: 6px"
+                        >
+                          <div class="carbon-bar-bg">
+                            <div class="carbon-bar" style="width: 5%"></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="material-name">Fly Ash (C)</span
+                        ><span class="material-tag tag-scm">SCM</span>
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        60
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          color: var(--green);
+                        "
+                      >
+                        2
+                      </td>
+                      <td>
+                        <div
+                          style="display: flex; align-items: center; gap: 6px"
+                        >
+                          <div class="carbon-bar-bg">
+                            <div class="carbon-bar" style="width: 1%"></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><span class="material-name">Water</span></td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        185
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          color: var(--ink-3);
+                        "
+                      >
+                        0.1
+                      </td>
+                      <td>
+                        <div
+                          style="display: flex; align-items: center; gap: 6px"
+                        >
+                          <div class="carbon-bar-bg">
+                            <div class="carbon-bar" style="width: 1%"></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="material-name">Superplasticizer</span>
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        7.2
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        7
+                      </td>
+                      <td>
+                        <div
+                          style="display: flex; align-items: center; gap: 6px"
+                        >
+                          <div class="carbon-bar-bg">
+                            <div class="carbon-bar" style="width: 3%"></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="material-name">Coarse Aggregate</span>
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        968
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        46
+                      </td>
+                      <td>
+                        <div
+                          style="display: flex; align-items: center; gap: 6px"
+                        >
+                          <div class="carbon-bar-bg">
+                            <div class="carbon-bar" style="width: 19%"></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><span class="material-name">Fine Aggregate</span></td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        749
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                        "
+                      >
+                        4
+                      </td>
+                      <td>
+                        <div
+                          style="display: flex; align-items: center; gap: 6px"
+                        >
+                          <div class="carbon-bar-bg">
+                            <div class="carbon-bar" style="width: 2%"></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr style="background: var(--bg)">
+                      <td style="font-weight: 500">Total</td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          font-weight: 500;
+                        "
+                      >
+                        2,347
+                      </td>
+                      <td
+                        style="
+                          text-align: right;
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          font-weight: 500;
+                          color: var(--green);
+                        "
+                      >
+                        241
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- ASTM Compliance -->
+              <div class="section-card">
+                <div class="section-card-header">
+                  <div class="section-card-title">
+                    <span class="icon-dot dot-green"></span>Compliance check
+                  </div>
+                  <div style="font-size: 11px; color: var(--ink-3)">
+                    Rule-based · not ML
+                  </div>
+                </div>
+                <div class="compliance-row">
+                  <span class="compliance-check">✅</span>
+                  <div class="compliance-rule">
+                    Max w/cm ratio<br /><span class="compliance-source"
+                      >ACI 318-19 Table 19.3.2</span
+                    >
+                  </div>
+                  <div class="compliance-val val-pass">0.42 ≤ 0.45</div>
+                </div>
+                <div class="compliance-row">
+                  <span class="compliance-check">✅</span>
+                  <div class="compliance-rule">
+                    Min f'c for W2 exposure<br /><span class="compliance-source"
+                      >ACI 318-19 §19.3.3</span
+                    >
+                  </div>
+                  <div class="compliance-val val-pass">38.4 ≥ 28 MPa</div>
+                </div>
+                <div class="compliance-row">
+                  <span class="compliance-check">✅</span>
+                  <div class="compliance-rule">
+                    SCM source meets ASTM C595<br /><span
+                      class="compliance-source"
+                      >ASTM C595-21</span
+                    >
+                  </div>
+                  <div class="compliance-val val-pass">GGBS Class S</div>
+                </div>
+                <div class="compliance-row">
+                  <span class="compliance-check">✅</span>
+                  <div class="compliance-rule">
+                    Fly ash meets ASTM C618<br /><span class="compliance-source"
+                      >ASTM C618-22</span
+                    >
+                  </div>
+                  <div class="compliance-val val-pass">Class C</div>
+                </div>
+                <div class="compliance-row">
+                  <span class="compliance-check">⚠️</span>
+                  <div class="compliance-rule">
+                    Air entrainment (freeze-thaw)<br /><span
+                      class="compliance-source"
+                      >ACI 318-19 §26.4.3</span
+                    >
+                  </div>
+                  <div class="compliance-val val-warn">Specify AE agent</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div>
+              <!-- Carbon comparison -->
+              <div class="section-card">
+                <div class="section-card-header">
+                  <div class="section-card-title">
+                    <span class="icon-dot dot-green"></span>Carbon comparison
+                  </div>
+                </div>
+                <div class="carbon-compare">
+                  <div class="compare-row">
+                    <div
+                      class="compare-label"
+                      style="font-size: 11px; font-weight: 500"
+                    >
+                      This mix (optimized)
+                    </div>
+                    <div class="compare-bar-wrap">
+                      <div class="compare-bar-bg">
+                        <div
+                          class="compare-bar-fill bar-optimized"
+                          style="width: 60%"
+                        ></div>
+                      </div>
+                    </div>
+                    <div class="compare-val" style="color: var(--green)">
+                      241 kgCO₂e
+                    </div>
+                  </div>
+                  <div class="compare-row">
+                    <div class="compare-label" style="font-size: 11px">
+                      100% OPC baseline
+                    </div>
+                    <div class="compare-bar-wrap">
+                      <div class="compare-bar-bg">
+                        <div
+                          class="compare-bar-fill bar-baseline"
+                          style="width: 100%"
+                        ></div>
+                      </div>
+                    </div>
+                    <div class="compare-val">402 kgCO₂e</div>
+                  </div>
+                  <div
+                    style="
+                      margin-top: 12px;
+                      padding-top: 12px;
+                      border-top: 1px solid var(--border);
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                    "
+                  >
+                    <div style="font-size: 12px; color: var(--ink-3)">
+                      Reduction:
+                      <strong style="color: var(--green)"
+                        >161 kgCO₂e/m³ (40%)</strong
+                      >
+                    </div>
+                    <div style="font-size: 11px; color: var(--ink-3)">
+                      = 0.64 kg/MPa·m³
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      margin-top: 10px;
+                      background: var(--green-light);
+                      border-radius: 6px;
+                      padding: 10px 12px;
+                      font-size: 12px;
+                      color: var(--green);
+                    "
+                  >
+                    At 500 m³ pour: <strong>80.5 tonnes CO₂e saved</strong> vs.
+                    standard OPC mix
+                  </div>
+                </div>
+              </div>
+
+              <!-- Suppliers -->
+              <div class="section-card">
+                <div class="section-card-header">
+                  <div class="section-card-title">
+                    <span class="icon-dot dot-green"></span>Local suppliers
+                  </div>
+                  <div style="font-size: 11px; color: var(--ink-3)">
+                    Within 300 mi · New Haven, CT
+                  </div>
+                </div>
+                <div class="supplier-grid">
+                  <div class="supplier-card">
+                    <div class="supplier-distance">41 mi</div>
+                    <div class="supplier-name">Lehigh Hanson</div>
+                    <div class="supplier-meta">New Britain, CT · GGBS</div>
+                    <div class="supplier-tags">
+                      <span
+                        class="pill-tag"
+                        style="
+                          background: var(--green-light);
+                          color: var(--green);
+                        "
+                        >ASTM C595</span
+                      >
+                      <span class="supplier-local-badge">Preferred</span>
+                    </div>
+                  </div>
+                  <div class="supplier-card">
+                    <div class="supplier-distance">67 mi</div>
+                    <div class="supplier-name">Pozzotive</div>
+                    <div class="supplier-meta">
+                      New Milford, CT · Natural pozzolan
+                    </div>
+                    <div class="supplier-tags">
+                      <span
+                        class="pill-tag"
+                        style="
+                          background: var(--green-light);
+                          color: var(--green);
+                        "
+                        >ASTM C618-N</span
+                      >
+                      <span
+                        class="pill-tag"
+                        style="
+                          background: var(--amber-light);
+                          color: var(--amber);
+                        "
+                        >Low carbon</span
+                      >
+                    </div>
+                  </div>
+                  <div class="supplier-card">
+                    <div class="supplier-distance">102 mi</div>
+                    <div class="supplier-name">Sublime Systems</div>
+                    <div class="supplier-meta">
+                      Somerville, MA · Low-carbon cement
+                    </div>
+                    <div class="supplier-tags">
+                      <span
+                        class="pill-tag"
+                        style="
+                          background: var(--blue-light);
+                          color: var(--blue);
+                        "
+                        >Emerging</span
+                      >
+                      <span
+                        class="pill-tag"
+                        style="
+                          background: var(--amber-light);
+                          color: var(--amber);
+                        "
+                        >~0.12 kgCO₂/kg</span
+                      >
+                    </div>
+                  </div>
+                  <div class="supplier-card">
+                    <div class="supplier-distance">138 mi</div>
+                    <div class="supplier-name">Boral Resources</div>
+                    <div class="supplier-meta">
+                      Taunton, MA · Class C fly ash
+                    </div>
+                    <div class="supplier-tags">
+                      <span
+                        class="pill-tag"
+                        style="
+                          background: var(--green-light);
+                          color: var(--green);
+                        "
+                        >ASTM C618-C</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rationale -->
+              <div class="section-card">
+                <div class="section-card-header">
+                  <div class="section-card-title">
+                    <span class="icon-dot dot-amber"></span>Engineering
+                    rationale
+                  </div>
+                </div>
+                <div class="rationale-body">
+                  <div class="rationale-tag">
+                    ⚡ AI-assisted · qualitative only · not compliance
+                  </div>
+                  <div class="rationale-text">
+                    <p>
+                      The optimizer selected a ternary blend replacing 51% of
+                      OPC with GGBS (36%) and Class C fly ash (14%). At W2
+                      exposure for a bridge deck, ACI 318-19 §19.3.2 requires
+                      w/cm ≤ 0.45 and f'c ≥ 28 MPa — both satisfied with margin.
+                    </p>
+                    <p>
+                      GGBS at 36% replacement improves long-term durability by
+                      refining pore structure and reducing chloride
+                      permeability, which is critical for deicing salt exposure.
+                      The superplasticizer dose (7.2 kg/m³) maintains
+                      workability at a low w/cm of 0.42 without increasing water
+                      content.
+                    </p>
+                    <p>
+                      The 60 kg/m³ fly ash contribution reduces heat of
+                      hydration — beneficial for a deck slab — while further
+                      lowering carbon. Note: fly ash at this dose may extend
+                      setting time by 30–60 min in cool weather. Air entrainment
+                      should be specified separately per ACI 318 §26.4.3 for
+                      freeze-thaw resistance.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="display: flex; gap: 12px; margin-top: 8px"
+            class="fade-up-4"
+          >
+            <button class="btn btn-primary" onclick="goToScreen(3)">
+              Edit Mix & Analyze →
+            </button>
+            <button class="btn btn-outline" onclick="openPdfModal()">
+              ⬇ Export PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- SCREEN 3: Edit & Analyze -->
+        <div class="screen" id="screen3">
+          <div class="result-header fade-up">
+            <div>
+              <div class="result-title">Edit Mix & Live Analysis</div>
+              <div class="result-subtitle">
+                Adjust quantities — strength, carbon, and cost update in real
+                time
+              </div>
+            </div>
+            <div class="astm-badge astm-pass" id="edit-astm-badge">
+              ✓ ASTM compliant
+            </div>
+          </div>
+
+          <div class="metric-row fade-up-2">
+            <div class="metric-card">
+              <div class="metric-label">Predicted strength</div>
+              <div class="metric-value" id="e-strength">38.4</div>
+              <div class="metric-unit">MPa @ 28 days</div>
+              <div class="metric-delta delta-green" id="e-strength-delta">
+                ✓ Meets 35 MPa target
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Embodied carbon</div>
+              <div class="metric-value" id="e-carbon">241</div>
+              <div class="metric-unit">kgCO₂e/m³</div>
+              <div class="metric-delta delta-green" id="e-carbon-delta">
+                ↓ 40% vs. OPC
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Material cost</div>
+              <div class="metric-value" id="e-cost">$118</div>
+              <div class="metric-unit">per m³</div>
+              <div class="metric-delta delta-green" id="e-cost-delta">
+                ↓ $9 vs. baseline
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">w/cm ratio</div>
+              <div class="metric-value" id="e-wb">0.42</div>
+              <div class="metric-unit">actual</div>
+              <div class="metric-delta delta-green" id="e-wb-delta">
+                ✓ ≤ 0.45 limit
+              </div>
+            </div>
+          </div>
+
+          <div class="edit-warning" id="edit-warning">
+            ⚠️
+            <span id="edit-warning-text"
+              >Modifying cement below 200 kg/m³ may reduce early strength and
+              affect w/cm compliance.</span
+            >
+          </div>
+
+          <div class="two-col fade-up-3" style="margin-top: 16px">
+            <div class="section-card">
+              <div class="section-card-header">
+                <div class="section-card-title">Edit proportions</div>
+                <button class="btn btn-outline btn-sm" onclick="resetMix()">
+                  ↺ Reset to optimized
+                </button>
+              </div>
+              <div style="padding: 16px">
+                <div class="field" style="margin-bottom: 16px">
+                  <label
+                    >OPC Cement (kg/m³)
+                    <span style="color: var(--ink-3); font-weight: 400"
+                      >· 0.85 kgCO₂/kg · $120/t</span
+                    ></label
+                  >
+                  <div class="slider-row">
+                    <input
+                      type="range"
+                      min="100"
+                      max="450"
+                      value="218"
+                      id="e-cem-sl"
+                      oninput="updateMix()"
+                    />
+                    <div class="slider-val">
+                      <input
+                        class="qty-input"
+                        type="number"
+                        id="e-cem"
+                        value="218"
+                        min="100"
+                        max="450"
+                        onchange="
+                          syncSlider('e-cem-sl', 'e-cem');
+                          updateMix();
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 16px">
+                  <label
+                    >GGBS / Slag (kg/m³)
+                    <span style="color: var(--ink-3); font-weight: 400"
+                      >· 0.07 kgCO₂/kg · $75/t</span
+                    ></label
+                  >
+                  <div class="slider-row">
+                    <input
+                      type="range"
+                      min="0"
+                      max="360"
+                      value="160"
+                      id="e-slag-sl"
+                      oninput="updateMix()"
+                    />
+                    <div class="slider-val">
+                      <input
+                        class="qty-input"
+                        type="number"
+                        id="e-slag"
+                        value="160"
+                        min="0"
+                        max="360"
+                        onchange="
+                          syncSlider('e-slag-sl', 'e-slag');
+                          updateMix();
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 16px">
+                  <label
+                    >Fly Ash (kg/m³)
+                    <span style="color: var(--ink-3); font-weight: 400"
+                      >· 0.027 kgCO₂/kg · $55/t</span
+                    ></label
+                  >
+                  <div class="slider-row">
+                    <input
+                      type="range"
+                      min="0"
+                      max="200"
+                      value="60"
+                      id="e-ash-sl"
+                      oninput="updateMix()"
+                    />
+                    <div class="slider-val">
+                      <input
+                        class="qty-input"
+                        type="number"
+                        id="e-ash"
+                        value="60"
+                        min="0"
+                        max="200"
+                        onchange="
+                          syncSlider('e-ash-sl', 'e-ash');
+                          updateMix();
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 16px">
+                  <label>Water (kg/m³)</label>
+                  <div class="slider-row">
+                    <input
+                      type="range"
+                      min="130"
+                      max="240"
+                      value="185"
+                      id="e-water-sl"
+                      oninput="updateMix()"
+                    />
+                    <div class="slider-val">
+                      <input
+                        class="qty-input"
+                        type="number"
+                        id="e-water"
+                        value="185"
+                        min="130"
+                        max="240"
+                        onchange="
+                          syncSlider('e-water-sl', 'e-water');
+                          updateMix();
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 16px">
+                  <label>Superplasticizer (kg/m³)</label>
+                  <div class="slider-row">
+                    <input
+                      type="range"
+                      min="0"
+                      max="32"
+                      step="0.5"
+                      value="7.2"
+                      id="e-sp-sl"
+                      oninput="updateMix()"
+                    />
+                    <div class="slider-val">
+                      <input
+                        class="qty-input"
+                        type="number"
+                        id="e-sp"
+                        value="7.2"
+                        min="0"
+                        max="32"
+                        step="0.5"
+                        onchange="
+                          syncSlider('e-sp-sl', 'e-sp');
+                          updateMix();
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 16px">
+                  <label>Coarse Aggregate (kg/m³)</label>
+                  <div class="slider-row">
+                    <input
+                      type="range"
+                      min="800"
+                      max="1145"
+                      value="968"
+                      id="e-ca-sl"
+                      oninput="updateMix()"
+                    />
+                    <div class="slider-val">
+                      <input
+                        class="qty-input"
+                        type="number"
+                        id="e-ca"
+                        value="968"
+                        min="800"
+                        max="1145"
+                        onchange="
+                          syncSlider('e-ca-sl', 'e-ca');
+                          updateMix();
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 0">
+                  <label>Fine Aggregate (kg/m³)</label>
+                  <div class="slider-row">
+                    <input
+                      type="range"
+                      min="594"
+                      max="993"
+                      value="749"
+                      id="e-fa-sl"
+                      oninput="updateMix()"
+                    />
+                    <div class="slider-val">
+                      <input
+                        class="qty-input"
+                        type="number"
+                        id="e-fa"
+                        value="749"
+                        min="594"
+                        max="993"
+                        onchange="
+                          syncSlider('e-fa-sl', 'e-fa');
+                          updateMix();
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <!-- Live carbon breakdown -->
+              <div class="section-card">
+                <div class="section-card-header">
+                  <div class="section-card-title">Live carbon breakdown</div>
+                </div>
+                <div style="padding: 16px">
+                  <div id="carbon-breakdown-bars"></div>
+                  <div
+                    style="
+                      margin-top: 14px;
+                      padding-top: 12px;
+                      border-top: 1px solid var(--border);
+                    "
+                  >
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 13px;
+                      "
+                    >
+                      <span style="color: var(--ink-3)">Total CO₂e</span>
+                      <span
+                        style="
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          font-weight: 500;
+                        "
+                        id="carbon-total-text"
+                        >241 kgCO₂e/m³</span
+                      >
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 12px;
+                        margin-top: 4px;
+                      "
+                    >
+                      <span style="color: var(--ink-3)">SCM replacement</span>
+                      <span
+                        style="
+                          font-family: &quot;DM Mono&quot;, monospace;
+                          color: var(--green);
+                        "
+                        id="scm-pct-text"
+                        >51%</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cost breakdown -->
+              <div class="section-card" style="margin-top: 0">
+                <div class="section-card-header">
+                  <div class="section-card-title">Cost breakdown</div>
+                </div>
+                <div style="padding: 4px 0" id="cost-breakdown-table"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 20px">
+            <button class="btn btn-primary" onclick="goToScreen(4)">
+              Finalize & Export →
+            </button>
+            <button class="btn btn-outline" onclick="goToScreen(2)">
+              ← Back to result
+            </button>
+          </div>
+        </div>
+
+        <!-- SCREEN 4: Export -->
+        <div class="screen" id="screen4">
+          <div class="result-header fade-up">
+            <div>
+              <div class="result-title">Report Preview</div>
+              <div class="result-subtitle">
+                Final mix design ready for supplier submission
+              </div>
+            </div>
+            <button class="btn btn-green fade-up" onclick="openPdfModal()">
+              ⬇ Download PDF Report
+            </button>
+          </div>
+
+          <div
+            style="
+              background: white;
+              border: 1px solid var(--border);
+              border-radius: 12px;
+              padding: 32px 36px;
+              max-width: 680px;
+              box-shadow: var(--shadow-lg);
+            "
+            class="fade-up-2"
+          >
+            <!-- Report header -->
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 28px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid var(--ink);
+              "
+            >
+              <div>
+                <div
+                  style="
+                    font-family: &quot;Roboto&quot;, sans-serif;
+                    font-size: 22px;
+                    font-weight: 600;
+                    letter-spacing: -0.02em;
+                  "
+                >
+                  Recrete Tech
+                </div>
+                <div
+                  style="
+                    font-size: 11px;
+                    color: var(--ink-3);
+                    margin-top: 2px;
+                    font-family: &quot;DM Mono&quot;, monospace;
+                  "
+                >
+                  MIX DESIGN REPORT · PROTOTYPE V3
+                </div>
+              </div>
+              <div style="text-align: right">
+                <div
+                  style="
+                    font-family: &quot;DM Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: var(--ink-3);
+                  "
+                >
+                  REPORT DATE
+                </div>
+                <div style="font-size: 12px; font-weight: 500">
+                  June 12, 2025
+                </div>
+                <div
+                  style="
+                    font-family: &quot;DM Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: var(--ink-3);
+                    margin-top: 4px;
+                  "
+                >
+                  REF: RCT-2025-0612-CT
+                </div>
+              </div>
+            </div>
+
+            <!-- Project info -->
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-bottom: 24px;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    font-family: &quot;DM Mono&quot;, monospace;
+                    font-size: 10px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--ink-3);
+                    margin-bottom: 8px;
+                  "
+                >
+                  Project
+                </div>
+                <div style="font-size: 13px; font-weight: 500">
+                  I-95 Bridge Deck, Span 4
+                </div>
+                <div style="font-size: 12px; color: var(--ink-3)">
+                  New Haven, Connecticut
+                </div>
+                <div style="font-size: 12px; color: var(--ink-3)">
+                  Structural Engineer: [Name]
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-family: &quot;DM Mono&quot;, monospace;
+                    font-size: 10px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--ink-3);
+                    margin-bottom: 8px;
+                  "
+                >
+                  Design criteria
+                </div>
+                <div style="font-size: 12px">
+                  Target f'c: <strong>35 MPa @ 28 days</strong>
+                </div>
+                <div style="font-size: 12px">
+                  Exposure: <strong>W2 (ACI 318-19)</strong>
+                </div>
+                <div style="font-size: 12px">
+                  Max w/cm: <strong>0.45</strong>
+                </div>
+                <div style="font-size: 12px">
+                  Use: <strong>Bridge deck (freeze-thaw)</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mix proportions table -->
+            <div style="margin-bottom: 24px">
+              <div
+                style="
+                  font-family: &quot;DM Mono&quot;, monospace;
+                  font-size: 10px;
+                  letter-spacing: 0.1em;
+                  text-transform: uppercase;
+                  color: var(--ink-3);
+                  margin-bottom: 8px;
+                "
+              >
+                Final mix proportions
+              </div>
+              <table
+                style="width: 100%; border-collapse: collapse; font-size: 12px"
+              >
+                <thead>
+                  <tr
+                    style="
+                      background: var(--bg);
+                      border-bottom: 1px solid var(--border);
+                    "
+                  >
+                    <th
+                      style="
+                        padding: 8px;
+                        text-align: left;
+                        font-weight: 500;
+                        color: var(--ink-2);
+                      "
+                    >
+                      Component
+                    </th>
+                    <th
+                      style="
+                        padding: 8px;
+                        text-align: right;
+                        font-weight: 500;
+                        color: var(--ink-2);
+                      "
+                    >
+                      kg/m³
+                    </th>
+                    <th
+                      style="
+                        padding: 8px;
+                        text-align: right;
+                        font-weight: 500;
+                        color: var(--ink-2);
+                      "
+                    >
+                      % of binder
+                    </th>
+                    <th
+                      style="
+                        padding: 8px;
+                        text-align: right;
+                        font-weight: 500;
+                        color: var(--ink-2);
+                      "
+                    >
+                      kgCO₂e/m³
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid var(--border)">
+                    <td style="padding: 7px 8px">OPC Cement (Type I/II)</td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-cem"
+                    >
+                      218
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-cem-pct"
+                    >
+                      49%
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-cem-co2"
+                    >
+                      185.3
+                    </td>
+                  </tr>
+                  <tr
+                    style="
+                      border-bottom: 1px solid var(--border);
+                      background: var(--green-light);
+                    "
+                  >
+                    <td style="padding: 7px 8px">GGBS Slag (Class S)</td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-slag"
+                    >
+                      160
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-slag-pct"
+                    >
+                      36%
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-slag-co2"
+                    >
+                      11.2
+                    </td>
+                  </tr>
+                  <tr
+                    style="
+                      border-bottom: 1px solid var(--border);
+                      background: var(--green-light);
+                    "
+                  >
+                    <td style="padding: 7px 8px">Fly Ash (Class C)</td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-ash"
+                    >
+                      60
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-ash-pct"
+                    >
+                      14%
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-ash-co2"
+                    >
+                      1.6
+                    </td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border)">
+                    <td style="padding: 7px 8px">Water</td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-water"
+                    >
+                      185
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      —
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      0.1
+                    </td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border)">
+                    <td style="padding: 7px 8px">Superplasticizer</td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-sp"
+                    >
+                      7.2
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      —
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      7.2
+                    </td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border)">
+                    <td style="padding: 7px 8px">Coarse Aggregate</td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-ca"
+                    >
+                      968
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      —
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      46.5
+                    </td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border)">
+                    <td style="padding: 7px 8px">Fine Aggregate</td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                      id="r-fa"
+                    >
+                      749
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      —
+                    </td>
+                    <td
+                      style="
+                        padding: 7px 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      3.7
+                    </td>
+                  </tr>
+                  <tr style="background: var(--bg); font-weight: 500">
+                    <td style="padding: 8px">Total</td>
+                    <td
+                      style="
+                        padding: 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      2,347
+                    </td>
+                    <td
+                      style="
+                        padding: 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                      "
+                    >
+                      100%
+                    </td>
+                    <td
+                      style="
+                        padding: 8px;
+                        text-align: right;
+                        font-family: &quot;DM Mono&quot;, monospace;
+                        color: var(--green);
+                      "
+                    >
+                      255.6
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div
+                style="font-size: 10px; color: var(--ink-3); margin-top: 6px"
+              >
+                ★ Green rows indicate SCM materials. CO₂e factors: OPC 0.85,
+                GGBS 0.07, Fly Ash 0.027 kgCO₂e/kg (Bath ICE v3.0).
+              </div>
+            </div>
+
+            <!-- Performance specs -->
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 24px;
+              "
+            >
+              <div
+                style="
+                  background: var(--bg);
+                  border-radius: 8px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-family: &quot;DM Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: var(--ink-3);
+                    margin-bottom: 4px;
+                  "
+                >
+                  PREDICTED f'c
+                </div>
+                <div
+                  style="
+                    font-family: &quot;Roboto&quot;, sans-serif;
+                    font-size: 22px;
+                    font-weight: 300;
+                  "
+                >
+                  38.4 MPa
+                </div>
+                <div style="font-size: 10px; color: var(--green)">
+                  95% CI: 34.1–42.7
+                </div>
+              </div>
+              <div
+                style="
+                  background: var(--green-light);
+                  border-radius: 8px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-family: &quot;DM Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: var(--green);
+                    margin-bottom: 4px;
+                  "
+                >
+                  CARBON SAVINGS
+                </div>
+                <div
+                  style="
+                    font-family: &quot;Roboto&quot;, sans-serif;
+                    font-size: 22px;
+                    font-weight: 300;
+                    color: var(--green);
+                  "
+                >
+                  40%
+                </div>
+                <div style="font-size: 10px; color: var(--green)">
+                  vs. OPC baseline
+                </div>
+              </div>
+              <div
+                style="
+                  background: var(--bg);
+                  border-radius: 8px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-family: &quot;DM Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: var(--ink-3);
+                    margin-bottom: 4px;
+                  "
+                >
+                  MATERIAL COST
+                </div>
+                <div
+                  style="
+                    font-family: &quot;Roboto&quot;, sans-serif;
+                    font-size: 22px;
+                    font-weight: 300;
+                  "
+                >
+                  $118/m³
+                </div>
+                <div style="font-size: 10px; color: var(--green)">
+                  ↓ $9 vs. baseline
+                </div>
+              </div>
+            </div>
+
+            <!-- Compliance -->
+            <div style="margin-bottom: 24px">
+              <div
+                style="
+                  font-family: &quot;DM Mono&quot;, monospace;
+                  font-size: 10px;
+                  letter-spacing: 0.1em;
+                  text-transform: uppercase;
+                  color: var(--ink-3);
+                  margin-bottom: 8px;
+                "
+              >
+                ASTM / ACI compliance (rule-based)
+              </div>
+              <table
+                style="width: 100%; border-collapse: collapse; font-size: 11px"
+              >
+                <tr style="border-bottom: 1px solid var(--border)">
+                  <td style="padding: 6px 8px">✅ Max w/cm ≤ 0.45</td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      font-family: &quot;DM Mono&quot;, monospace;
+                      color: var(--green);
+                    "
+                  >
+                    Actual: 0.42
+                  </td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      color: var(--ink-3);
+                    "
+                  >
+                    ACI 318 §19.3.2
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border)">
+                  <td style="padding: 6px 8px">✅ Min f'c ≥ 28 MPa (W2)</td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      font-family: &quot;DM Mono&quot;, monospace;
+                      color: var(--green);
+                    "
+                  >
+                    38.4 MPa
+                  </td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      color: var(--ink-3);
+                    "
+                  >
+                    ACI 318 §19.3.3
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border)">
+                  <td style="padding: 6px 8px">✅ GGBS — ASTM C595 Class S</td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      font-family: &quot;DM Mono&quot;, monospace;
+                      color: var(--green);
+                    "
+                  >
+                    Confirmed
+                  </td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      color: var(--ink-3);
+                    "
+                  >
+                    ASTM C595-21
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border)">
+                  <td style="padding: 6px 8px">
+                    ✅ Fly ash — ASTM C618 Class C
+                  </td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      font-family: &quot;DM Mono&quot;, monospace;
+                      color: var(--green);
+                    "
+                  >
+                    Confirmed
+                  </td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      color: var(--ink-3);
+                    "
+                  >
+                    ASTM C618-22
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 8px">⚠️ Air entrainment required</td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      font-family: &quot;DM Mono&quot;, monospace;
+                      color: var(--amber);
+                    "
+                  >
+                    Specify separately
+                  </td>
+                  <td
+                    style="
+                      padding: 6px 8px;
+                      text-align: right;
+                      color: var(--ink-3);
+                    "
+                  >
+                    ACI 318 §26.4.3
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Supplier notes -->
+            <div style="margin-bottom: 20px">
+              <div
+                style="
+                  font-family: &quot;DM Mono&quot;, monospace;
+                  font-size: 10px;
+                  letter-spacing: 0.1em;
+                  text-transform: uppercase;
+                  color: var(--ink-3);
+                  margin-bottom: 8px;
+                "
+              >
+                Recommended suppliers
+              </div>
+              <div
+                style="font-size: 12px; line-height: 1.8; color: var(--ink-2)"
+              >
+                <strong>GGBS:</strong> Lehigh Hanson, New Britain CT (41 mi) —
+                ASTM C595 Class S certified<br />
+                <strong>Fly Ash:</strong> Boral Resources, Taunton MA (138 mi) —
+                ASTM C618 Class C<br />
+                <strong>Alternative SCM:</strong> Pozzotive, New Milford CT (67
+                mi) — Natural pozzolan, 0.04 kgCO₂/kg<br />
+                <strong>Note:</strong> Sublime Systems (Somerville MA) emerging
+                low-carbon cement suitable for partial OPC replacement in future
+                designs.
+              </div>
+            </div>
+
+            <!-- Rationale -->
+            <div
+              style="
+                background: var(--amber-light);
+                border-radius: 8px;
+                padding: 14px 16px;
+                margin-bottom: 0;
+              "
+            >
+              <div
+                style="
+                  font-family: &quot;DM Mono&quot;, monospace;
+                  font-size: 10px;
+                  color: var(--amber);
+                  margin-bottom: 6px;
+                  letter-spacing: 0.06em;
+                "
+              >
+                AI-ASSISTED ENGINEERING CONTEXT — INFORMATIONAL ONLY
+              </div>
+              <div
+                style="font-size: 11px; color: var(--ink-2); line-height: 1.6"
+              >
+                Ternary SCM blend (36% GGBS + 14% fly ash) selected to minimize
+                embodied carbon while meeting W2 durability requirements. GGBS
+                improves chloride resistance critical for bridge deck deicing
+                salt exposure. Superplasticizer maintains workability at w/cm
+                0.42. Air entrainment agent to be specified by EOR per ACI 318
+                §26.4.3.
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="display: flex; gap: 12px; margin-top: 20px"
+            class="fade-up-4"
+          >
+            <button class="btn btn-green" onclick="openPdfModal()">
+              ⬇ Download PDF
+            </button>
+            <button class="btn btn-outline" onclick="goToScreen(3)">
+              ← Back to edit
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- end main -->
+    </div>
+    <!-- end app -->
+
+    <script>
+      // ========= STATE =========
+      let currentScreen = 2;
+
+      const CARBON_FACTORS = {
+        cem: 0.85,
+        slag: 0.07,
+        ash: 0.027,
+        water: 0.0003,
+        sp: 1.0,
+        ca: 0.048,
+        fa: 0.005,
+      };
+      const COST_FACTORS = {
+        cem: 0.12,
+        slag: 0.075,
+        ash: 0.055,
+        water: 0.001,
+        sp: 2.5,
+        ca: 0.032,
+        fa: 0.03,
+      };
+
+      function v(id) {
+        return parseFloat(document.getElementById(id).value) || 0;
+      }
+
+      // ========= NAVIGATION =========
+      function goToScreen(n) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("screen" + n).classList.add("active");
+        currentScreen = n;
+
+        ["step1-tab", "step2-tab", "step3-tab", "step4-tab"].forEach(
+          (id, i) => {
+            const el = document.getElementById(id);
+            el.className = "step";
+            if (i + 1 < n)
+              ((el.className = "step done"),
+                (el.querySelector(".step-num").textContent = "✓"));
+            else if (i + 1 === n) el.className = "step active";
+            else el.querySelector(".step-num").textContent = i + 1;
+          },
+        );
+
+        document.getElementById("sidebar-screen1").style.display =
+          n === 1 ? "block" : "none";
+        document.getElementById("sidebar-results").style.display =
+          n > 1 ? "block" : "none";
+
+        if (n === 3) renderLiveEdit();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // ========= OPTIMIZATION SIMULATION =========
+      function runOptimization() {
+        const overlay = document.getElementById("loadingOverlay");
+        overlay.classList.add("show");
+        const steps = ["ls1", "ls2", "ls3", "ls4", "ls5"];
+        let i = 0;
+        steps.forEach(
+          (s) => (document.getElementById(s).className = "loading-step"),
+        );
+        const tick = setInterval(() => {
+          if (i > 0)
+            document.getElementById(steps[i - 1]).className =
+              "loading-step done";
+          if (i < steps.length) {
+            document.getElementById(steps[i]).className = "loading-step active";
+            i++;
+          } else {
+            clearInterval(tick);
+            setTimeout(() => {
+              overlay.classList.remove("show");
+              goToScreen(2);
+            }, 400);
+          }
+        }, 600);
+      }
+
+      // ========= EXPOSURE / USE CASE SELECTORS =========
+      function selectExposure(el, code) {
+        document
+          .querySelectorAll(".exposure-card")
+          .forEach((c) => c.classList.remove("selected"));
+        el.classList.add("selected");
+      }
+      function selectUse(el) {
+        document
+          .querySelectorAll(".use-pill")
+          .forEach((p) => p.classList.remove("selected"));
+        el.classList.add("selected");
+      }
+
+      // ========= LIVE EDIT LOGIC =========
+      function syncSlider(slId, inId) {
+        document.getElementById(slId).value =
+          document.getElementById(inId).value;
+      }
+      function syncInput(inId, slId) {
+        document.getElementById(inId).value =
+          document.getElementById(slId).value;
+      }
+
+      // Attach slider → input sync
+      document
+        .querySelectorAll('input[type="range"][id^="e-"]')
+        .forEach((sl) => {
+          sl.addEventListener("input", () => {
+            const inId = sl.id.replace("-sl", "");
+            if (document.getElementById(inId))
+              document.getElementById(inId).value = sl.value;
+          });
+        });
+
+      function updateMix() {
+        const cem = v("e-cem");
+        const slag = v("e-slag");
+        const ash = v("e-ash");
+        const water = v("e-water");
+        const sp = v("e-sp");
+        const ca = v("e-ca");
+        const fa = v("e-fa");
+
+        // Predict strength (calibrated regression approximation)
+        const binder = cem + slag + ash;
+        const wb = water / Math.max(binder, 1);
+        // Simplified model: intercept + cement effect + slag effect + age + SP
+        let strength =
+          -20 +
+          cem * 0.055 +
+          slag * 0.028 +
+          ash * 0.015 +
+          sp * 0.5 -
+          water * 0.12 +
+          8.5;
+        strength = Math.max(5, Math.min(82, parseFloat(strength.toFixed(1))));
+
+        // Carbon
+        const carbonCem = cem * CARBON_FACTORS.cem;
+        const carbonSlag = slag * CARBON_FACTORS.slag;
+        const carbonAsh = ash * CARBON_FACTORS.ash;
+        const carbonWater = water * CARBON_FACTORS.water;
+        const carbonSp = sp * CARBON_FACTORS.sp;
+        const carbonCa = ca * CARBON_FACTORS.ca;
+        const carbonFa = fa * CARBON_FACTORS.fa;
+        const totalCarbon = Math.round(
+          carbonCem +
+            carbonSlag +
+            carbonAsh +
+            carbonWater +
+            carbonSp +
+            carbonCa +
+            carbonFa,
+        );
+        const baselineCarbon = 402;
+        const carbonPct = Math.round((1 - totalCarbon / baselineCarbon) * 100);
+
+        // Cost
+        const totalCost = Math.round(
+          cem * COST_FACTORS.cem +
+            slag * COST_FACTORS.slag +
+            ash * COST_FACTORS.ash +
+            water * COST_FACTORS.water +
+            sp * COST_FACTORS.sp +
+            ca * COST_FACTORS.ca +
+            fa * COST_FACTORS.fa,
+        );
+        const baselineCost = 127;
+
+        // w/cm
+        const wbActual = (water / binder).toFixed(2);
+        const scmPct = Math.round(((slag + ash) / binder) * 100);
+
+        // Update metric cards
+        document.getElementById("e-strength").textContent = strength;
+        document.getElementById("e-carbon").textContent = totalCarbon;
+        document.getElementById("e-cost").textContent = "$" + totalCost;
+        document.getElementById("e-wb").textContent = wbActual;
+
+        // Deltas
+        const strengthOk = strength >= 35;
+        document.getElementById("e-strength-delta").className =
+          "metric-delta " + (strengthOk ? "delta-green" : "delta-red");
+        document.getElementById("e-strength-delta").textContent = strengthOk
+          ? "✓ Meets 35 MPa target"
+          : "✗ Below 35 MPa target";
+
+        document.getElementById("e-carbon-delta").className =
+          "metric-delta " + (carbonPct > 0 ? "delta-green" : "delta-amber");
+        document.getElementById("e-carbon-delta").textContent =
+          (carbonPct > 0
+            ? "↓ " + carbonPct + "%"
+            : "↑ " + Math.abs(carbonPct) + "%") + " vs. OPC";
+
+        const costDiff = totalCost - baselineCost;
+        document.getElementById("e-cost-delta").className =
+          "metric-delta " + (costDiff <= 0 ? "delta-green" : "delta-amber");
+        document.getElementById("e-cost-delta").textContent =
+          (costDiff <= 0 ? "↓ $" + Math.abs(costDiff) : "↑ $" + costDiff) +
+          " vs. baseline";
+
+        const wbOk = parseFloat(wbActual) <= 0.45;
+        document.getElementById("e-wb-delta").className =
+          "metric-delta " + (wbOk ? "delta-green" : "delta-red");
+        document.getElementById("e-wb-delta").textContent = wbOk
+          ? "✓ ≤ 0.45 limit"
+          : "✗ Exceeds 0.45 limit";
+
+        // Warning
+        const warn = document.getElementById("edit-warning");
+        let warnText = "";
+        if (cem < 180)
+          warnText =
+            "Low cement content may reduce early strength and workability for bridge deck applications.";
+        else if (parseFloat(wbActual) > 0.45)
+          warnText =
+            "w/cm exceeds ACI 318 W2 limit of 0.45. Reduce water or increase binder content.";
+        else if ((slag + ash) / binder > 0.65)
+          warnText =
+            "SCM replacement exceeds 65% — verify with ACI 318 §26.4.2 for structural use.";
+        if (warnText) {
+          warn.classList.add("show");
+          document.getElementById("edit-warning-text").textContent = warnText;
+        } else warn.classList.remove("show");
+
+        // ASTM badge
+        const badge = document.getElementById("edit-astm-badge");
+        if (!strengthOk || !wbOk) {
+          badge.className = "astm-badge astm-warn";
+          badge.textContent = "⚠ Review compliance";
+        } else {
+          badge.className = "astm-badge astm-pass";
+          badge.textContent = "✓ ASTM compliant";
+        }
+
+        // Carbon breakdown bars
+        const materials = [
+          { name: "OPC Cement", carbon: Math.round(carbonCem), pct: carbonCem },
+          { name: "Coarse Agg.", carbon: Math.round(carbonCa), pct: carbonCa },
+          {
+            name: "Superplasticizer",
+            carbon: Math.round(carbonSp),
+            pct: carbonSp,
+          },
+          {
+            name: "GGBS Slag",
+            carbon: Math.round(carbonSlag),
+            pct: carbonSlag,
+          },
+          { name: "Fine Agg.", carbon: Math.round(carbonFa), pct: carbonFa },
+          { name: "Fly Ash", carbon: Math.round(carbonAsh), pct: carbonAsh },
+        ].sort((a, b) => b.pct - a.pct);
+        const maxC = materials[0].pct;
+        document.getElementById("carbon-breakdown-bars").innerHTML = materials
+          .map(
+            (m) => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div style="min-width:110px;font-size:11px;color:var(--ink-3);">${m.name}</div>
+      <div class="carbon-bar-bg" style="flex:1;"><div class="carbon-bar${m.pct / maxC > 0.7 ? " high" : ""}" style="width:${Math.max(2, Math.round((m.pct / maxC) * 100))}%;"></div></div>
+      <div style="min-width:48px;text-align:right;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-2);">${m.carbon}</div>
+    </div>
+  `,
+          )
+          .join("");
+        document.getElementById("carbon-total-text").textContent =
+          totalCarbon + " kgCO₂e/m³";
+        document.getElementById("scm-pct-text").textContent = scmPct + "%";
+
+        // Cost breakdown
+        const costs = [
+          { name: "Coarse Aggregate", cost: Math.round(ca * COST_FACTORS.ca) },
+          { name: "OPC Cement", cost: Math.round(cem * COST_FACTORS.cem) },
+          { name: "Fine Aggregate", cost: Math.round(fa * COST_FACTORS.fa) },
+          { name: "GGBS Slag", cost: Math.round(slag * COST_FACTORS.slag) },
+          { name: "Superplasticizer", cost: Math.round(sp * COST_FACTORS.sp) },
+          { name: "Fly Ash", cost: Math.round(ash * COST_FACTORS.ash) },
+          { name: "Water", cost: Math.round(water * COST_FACTORS.water) },
+        ].sort((a, b) => b.cost - a.cost);
+        document.getElementById("cost-breakdown-table").innerHTML =
+          costs
+            .map(
+              (c, i) => `
+    <div style="display:flex;justify-content:space-between;padding:8px 18px;border-bottom:${i < costs.length - 1 ? "1px solid var(--border)" : "none"};font-size:12px;">
+      <span style="color:var(--ink-2);">${c.name}</span>
+      <span style="font-family:'DM Mono',monospace;font-weight:500;">$${c.cost}</span>
+    </div>
+  `,
+            )
+            .join("") +
+          `<div style="display:flex;justify-content:space-between;padding:10px 18px;background:var(--bg);font-size:13px;font-weight:500;border-top:1px solid var(--border);">
+    <span>Total</span><span style="font-family:'DM Mono',monospace;">$${totalCost}/m³</span></div>`;
+
+        // Update sidebar
+        document.getElementById("sb-strength").textContent = strength + " MPa";
+        document.getElementById("sb-wb").textContent = wbActual;
+        document.getElementById("sb-carbon").textContent =
+          totalCarbon + " kgCO₂e/m³";
+        document.getElementById("sb-saving").textContent =
+          (carbonPct > 0 ? "↓ " : "↑ ") +
+          Math.abs(carbonPct) +
+          "% " +
+          (carbonPct > 0 ? "less" : "more") +
+          " carbon";
+        document.getElementById("sb-saving").className =
+          "metric-delta " + (carbonPct > 0 ? "delta-green" : "delta-amber");
+        document.getElementById("sb-carbon-bar").style.width =
+          Math.round((totalCarbon / baselineCarbon) * 100) + "%";
+        document.getElementById("sb-cost").textContent =
+          "$" + totalCost + "/m³";
+        document.getElementById("sb-costsave").textContent =
+          (costDiff <= 0 ? "−$" + Math.abs(costDiff) : "+$" + costDiff) + "/m³";
+      }
+
+      function renderLiveEdit() {
+        updateMix();
+      }
+
+      function resetMix() {
+        const defaults = {
+          cem: 218,
+          slag: 160,
+          ash: 60,
+          water: 185,
+          sp: 7.2,
+          ca: 968,
+          fa: 749,
+        };
+        Object.entries(defaults).forEach(([k, v]) => {
+          const inp = document.getElementById("e-" + k);
+          const sl = document.getElementById("e-" + k + "-sl");
+          if (inp) inp.value = v;
+          if (sl) sl.value = v;
+        });
+        updateMix();
+      }
+
+      // ========= PDF MODAL =========
+      function openPdfModal() {
+        document.getElementById("pdfModal").classList.add("show");
+      }
+      function closePdfModal() {
+        document.getElementById("pdfModal").classList.remove("show");
+      }
+      function simulatePdfDownload() {
+        closePdfModal();
+        const btn = document.querySelector(".btn-green");
+        // Show confirmation
+        const note = document.createElement("div");
+        note.style.cssText =
+          "position:fixed;bottom:24px;right:24px;background:var(--ink);color:white;padding:12px 20px;border-radius:8px;font-size:13px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,0.2);";
+        note.textContent = "✓ PDF generated: RCT-2025-0612-CT.pdf";
+        document.body.appendChild(note);
+        setTimeout(() => note.remove(), 3500);
+      }
+
+      // Close modal on overlay click
+      document
+        .getElementById("pdfModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closePdfModal();
+        });
+
+      // Init: start on screen 2 with results shown
+      goToScreen(2);
+    </script>
   </body>
 </html>
