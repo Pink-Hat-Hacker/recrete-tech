@@ -3,8 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recrete Tech — Prototype V3</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Recrete</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <style>
       :root {
         --ink: #0f1a12;
@@ -1051,9 +1056,7 @@
   </head>
   <body>
     <header>
-      <div class="logo">
-        RECRETE TECH
-      </div>
+      <div class="logo">RECRETE SYSTEMS</div>
       <div class="header-badge">PROTOTYPE V3</div>
     </header>
 
@@ -2527,7 +2530,7 @@
                     letter-spacing: -0.02em;
                   "
                 >
-                  Recrete Tech
+                  Recrete Systems
                 </div>
                 <div
                   style="
@@ -2551,7 +2554,7 @@
                   REPORT DATE
                 </div>
                 <div style="font-size: 12px; font-weight: 500">
-                  June 12, 2025
+                  April 3, 2026
                 </div>
                 <div
                   style="
@@ -3622,6 +3625,24 @@
         updateMix();
       }
 
+      // // ========= PDF MODAL =========
+      // function openPdfModal() {
+      //   document.getElementById("pdfModal").classList.add("show");
+      // }
+      // function closePdfModal() {
+      //   document.getElementById("pdfModal").classList.remove("show");
+      // }
+      // function simulatePdfDownload() {
+      //   closePdfModal();
+      //   const btn = document.querySelector(".btn-green");
+      //   // Show confirmation
+      //   const note = document.createElement("div");
+      //   note.style.cssText =
+      //     "position:fixed;bottom:24px;right:24px;background:var(--ink);color:white;padding:12px 20px;border-radius:8px;font-size:13px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,0.2);";
+      //   note.textContent = "✓ PDF generated: RCT-2025-0612-CT.pdf";
+      //   document.body.appendChild(note);
+      //   setTimeout(() => note.remove(), 3500);
+      // }
       // ========= PDF MODAL =========
       function openPdfModal() {
         document.getElementById("pdfModal").classList.add("show");
@@ -3629,17 +3650,668 @@
       function closePdfModal() {
         document.getElementById("pdfModal").classList.remove("show");
       }
+
       function simulatePdfDownload() {
         closePdfModal();
-        const btn = document.querySelector(".btn-green");
-        // Show confirmation
+
+        // Read current mix values (use edited values if on screen 3, else defaults)
+        const cem = parseFloat(document.getElementById("e-cem")?.value || 218);
+        const slag = parseFloat(
+          document.getElementById("e-slag")?.value || 160,
+        );
+        const ash = parseFloat(document.getElementById("e-ash")?.value || 60);
+        const water = parseFloat(
+          document.getElementById("e-water")?.value || 185,
+        );
+        const sp = parseFloat(document.getElementById("e-sp")?.value || 7.2);
+        const ca = parseFloat(document.getElementById("e-ca")?.value || 968);
+        const fa = parseFloat(document.getElementById("e-fa")?.value || 749);
+
+        const binder = cem + slag + ash;
+        const wbActual = (water / binder).toFixed(2);
+        const scmPct = Math.round(((slag + ash) / binder) * 100);
+        const totalKg = cem + slag + ash + water + sp + ca + fa;
+
+        const carbonCem = +(cem * 0.85).toFixed(1);
+        const carbonSlag = +(slag * 0.07).toFixed(1);
+        const carbonAsh = +(ash * 0.027).toFixed(1);
+        const carbonWater = 0.1;
+        const carbonSp = +(sp * 1.0).toFixed(1);
+        const carbonCa = +(ca * 0.048).toFixed(1);
+        const carbonFa = +(fa * 0.005).toFixed(1);
+        const totalCarbon = +(
+          carbonCem +
+          carbonSlag +
+          carbonAsh +
+          carbonWater +
+          carbonSp +
+          carbonCa +
+          carbonFa
+        ).toFixed(1);
+        const baselineCarbon = 402;
+        const carbonSaving = Math.round(
+          (1 - totalCarbon / baselineCarbon) * 100,
+        );
+
+        const totalCost = Math.round(
+          cem * 0.12 +
+            slag * 0.075 +
+            ash * 0.055 +
+            water * 0.001 +
+            sp * 2.5 +
+            ca * 0.032 +
+            fa * 0.03,
+        );
+        const baselineCost = 127;
+
+        let strength = +(
+          -20 +
+          cem * 0.055 +
+          slag * 0.028 +
+          ash * 0.015 +
+          sp * 0.5 -
+          water * 0.12 +
+          8.5
+        ).toFixed(1);
+        strength = Math.max(5, Math.min(82, strength));
+        const strengthLow = +(strength - 4.3).toFixed(1);
+        const strengthHigh = +(strength + 4.3).toFixed(1);
+
+        const cemPct = Math.round((cem / binder) * 100);
+        const slagPct = Math.round((slag / binder) * 100);
+        const ashPct = Math.round((ash / binder) * 100);
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+          orientation: "portrait",
+          unit: "mm",
+          format: "a4",
+        });
+        const W = 210; // A4 width mm
+        const margin = 18;
+        const colW = W - margin * 2;
+        let y = 0;
+
+        // ── Color helpers ──────────────────────────────────────────────
+        const INK = [15, 26, 18];
+        const INK2 = [45, 61, 49];
+        const INK3 = [85, 106, 90];
+        const GREEN = [26, 107, 58];
+        const GREEN_LT = [212, 234, 219];
+        const AMBER = [184, 92, 0];
+        const AMBER_LT = [253, 236, 214];
+        const BG = [244, 241, 234];
+        const BG2 = [237, 234, 225];
+        const WHITE = [255, 255, 255];
+        const RED = [153, 31, 31];
+
+        function setFill(rgb) {
+          doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+        }
+        function setDraw(rgb) {
+          doc.setDrawColor(rgb[0], rgb[1], rgb[2]);
+        }
+        function setFont(rgb) {
+          doc.setTextColor(rgb[0], rgb[1], rgb[2]);
+        }
+        function rect(x, ry, w, h, style = "F") {
+          doc.rect(x, ry, w, h, style);
+        }
+        function line(x1, y1, x2, y2) {
+          doc.line(x1, y1, x2, y2);
+        }
+
+        function label(txt, x, ry, size = 8, color = INK3, style = "normal") {
+          doc.setFontSize(size);
+          doc.setFont("helvetica", style);
+          setFont(color);
+          doc.text(txt, x, ry);
+        }
+
+        function hRule(ry, color = BG2) {
+          setDraw(color);
+          doc.setLineWidth(0.3);
+          line(margin, ry, W - margin, ry);
+        }
+
+        // ── PAGE HEADER ────────────────────────────────────────────────
+        setFill(INK);
+        rect(0, 0, W, 22, "F");
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        setFont(WHITE);
+        doc.text("Recrete Tech", margin, 14);
+        doc.setFontSize(7);
+        doc.setFont("helvetica", "normal");
+        setFont([160, 190, 165]);
+        doc.text("MIX DESIGN REPORT  ·  PROTOTYPE V3", margin + 40, 14);
+        doc.setFontSize(7);
+        setFont([160, 190, 165]);
+        doc.text("REF: RCT-2025-0612-CT", W - margin, 14, { align: "right" });
+
+        y = 30;
+
+        // ── PROJECT INFO ROW ──────────────────────────────────────────
+        setFill(BG);
+        rect(margin, y, colW, 22, "F");
+        setDraw([210, 207, 198]);
+        doc.setLineWidth(0.3);
+        doc.rect(margin, y, colW, 22, "S");
+
+        label("PROJECT", margin + 4, y + 6, 7, INK3, "bold");
+        label("I-95 Bridge Deck, Span 4", margin + 4, y + 12, 9, INK, "bold");
+        label("New Haven, Connecticut", margin + 4, y + 18, 8, INK2);
+
+        label("DESIGN CRITERIA", margin + 80, y + 6, 7, INK3, "bold");
+        label("Target f'c: 35 MPa @ 28 days", margin + 80, y + 12, 8, INK2);
+        label(
+          "Exposure: W2 (ACI 318-19)  |  Max w/cm: 0.45  |  Use: Bridge deck",
+          margin + 80,
+          y + 18,
+          8,
+          INK2,
+        );
+
+        label("DATE", W - margin - 36, y + 6, 7, INK3, "bold");
+        label("June 12, 2025", W - margin - 36, y + 12, 8, INK2);
+
+        y += 28;
+
+        // ── PERFORMANCE METRICS ROW ───────────────────────────────────
+        const mW = (colW - 6) / 4;
+        const metrics = [
+          {
+            label: "PREDICTED f'c",
+            value: strength + " MPa",
+            sub: "95% CI: " + strengthLow + "\u2013" + strengthHigh,
+            color: GREEN,
+          },
+          {
+            label: "EMBODIED CARBON",
+            value: totalCarbon + " kgCO\u2082e/m\u00b3",
+            sub: "\u2193 " + carbonSaving + "% vs OPC baseline",
+            color: GREEN,
+          },
+          {
+            label: "MATERIAL COST",
+            value: "$" + totalCost + "/m\u00b3",
+            sub:
+              (totalCost <= baselineCost
+                ? "\u2193 $" + (baselineCost - totalCost)
+                : "\u2191 $" + (totalCost - baselineCost)) + " vs baseline",
+            color: totalCost <= baselineCost ? GREEN : AMBER,
+          },
+          {
+            label: "w/cm RATIO",
+            value: wbActual,
+            sub: "Max permitted: 0.45",
+            color: parseFloat(wbActual) <= 0.45 ? GREEN : RED,
+          },
+        ];
+
+        metrics.forEach((m, i) => {
+          const mx = margin + i * (mW + 2);
+          setFill(i === 0 || i === 1 ? GREEN_LT : BG);
+          rect(mx, y, mW, 20, "F");
+          setDraw([210, 207, 198]);
+          doc.setLineWidth(0.2);
+          doc.rect(mx, y, mW, 20, "S");
+          label(m.label, mx + 3, y + 6, 6.5, INK3, "bold");
+          doc.setFontSize(11);
+          doc.setFont("helvetica", "bold");
+          setFont(m.color);
+          doc.text(m.value, mx + 3, y + 13);
+          label(m.sub, mx + 3, y + 18, 6.5, m.color);
+        });
+
+        y += 26;
+
+        // ── MIX PROPORTIONS TABLE ─────────────────────────────────────
+        label(
+          "MIX PROPORTIONS (kg/m\u00b3) \u2014 ACI 211.1 basis",
+          margin,
+          y,
+          8,
+          INK3,
+          "bold",
+        );
+        y += 5;
+
+        doc.autoTable({
+          startY: y,
+          margin: { left: margin, right: margin },
+          head: [
+            [
+              "Component",
+              "ASTM Spec",
+              "kg/m\u00b3",
+              "% of Binder",
+              "kgCO\u2082e/m\u00b3",
+              "CO\u2082 Factor",
+            ],
+          ],
+          body: [
+            [
+              "OPC Cement (Type I/II)",
+              "C150",
+              cem,
+              cemPct + "%",
+              carbonCem,
+              "0.85 kg/kg",
+            ],
+            [
+              "GGBS Slag (Class S)",
+              "C595",
+              slag,
+              slagPct + "%",
+              carbonSlag,
+              "0.07 kg/kg",
+            ],
+            [
+              "Fly Ash (Class C)",
+              "C618",
+              ash,
+              ashPct + "%",
+              carbonAsh,
+              "0.027 kg/kg",
+            ],
+            ["Water", "\u2014", water, "\u2014", carbonWater, "0.0003 kg/kg"],
+            ["Superplasticizer", "\u2014", sp, "\u2014", carbonSp, "1.0 kg/kg"],
+            ["Coarse Aggregate", "C33", ca, "\u2014", carbonCa, "0.048 kg/kg"],
+            ["Fine Aggregate", "C33", fa, "\u2014", carbonFa, "0.005 kg/kg"],
+            ["TOTAL", "", +totalKg.toFixed(0), "", totalCarbon, ""],
+          ],
+          styles: {
+            fontSize: 8,
+            cellPadding: 2.5,
+            font: "helvetica",
+            textColor: INK2,
+          },
+          headStyles: {
+            fillColor: INK,
+            textColor: WHITE,
+            fontStyle: "bold",
+            fontSize: 7.5,
+          },
+          footStyles: { fillColor: BG },
+          columnStyles: {
+            0: { cellWidth: 52 },
+            1: { cellWidth: 20, halign: "center" },
+            2: { cellWidth: 18, halign: "right" },
+            3: { cellWidth: 22, halign: "center" },
+            4: { cellWidth: 26, halign: "right" },
+            5: { cellWidth: 28, halign: "right" },
+          },
+          didParseCell(data) {
+            // Highlight SCM rows green, total row dark
+            const scmRows = [1, 2];
+            if (scmRows.includes(data.row.index) && data.section === "body") {
+              data.cell.styles.fillColor = GREEN_LT;
+              data.cell.styles.textColor = [26, 80, 45];
+            }
+            if (data.row.index === 7 && data.section === "body") {
+              data.cell.styles.fillColor = BG2;
+              data.cell.styles.fontStyle = "bold";
+              data.cell.styles.textColor = INK;
+            }
+            // Carbon column — color by value
+            if (
+              data.column.index === 4 &&
+              data.section === "body" &&
+              data.row.index < 7
+            ) {
+              const val = parseFloat(data.cell.raw);
+              data.cell.styles.textColor = val > 100 ? AMBER : GREEN;
+            }
+          },
+        });
+
+        y = doc.lastAutoTable.finalY + 6;
+        label(
+          "* Green rows = SCM (Supplementary Cementitious Materials). CO\u2082e factors: Bath ICE v3.0.",
+          margin,
+          y,
+          6.5,
+          INK3,
+        );
+        y += 8;
+
+        // ── CARBON COMPARISON ─────────────────────────────────────────
+        label("CARBON COMPARISON vs. OPC BASELINE", margin, y, 8, INK3, "bold");
+        y += 5;
+
+        // Bar: this mix
+        setFill(GREEN_LT);
+        rect(margin, y, colW, 8, "F");
+        const thisBarW = Math.round(
+          (totalCarbon / baselineCarbon) * (colW - 60),
+        );
+        setFill(GREEN);
+        rect(margin, y, thisBarW, 8, "F");
+        label("This mix (optimized)", margin + 2, y + 5.5, 7.5, WHITE, "bold");
+        label(
+          totalCarbon + " kgCO\u2082e/m\u00b3",
+          W - margin - 2,
+          y + 5.5,
+          7.5,
+          GREEN,
+          "bold",
+        );
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7.5);
+        setFont(GREEN);
+        doc.text(
+          totalCarbon + " kgCO\u2082e/m\u00b3",
+          W - margin - 2,
+          y + 5.5,
+          { align: "right" },
+        );
+        y += 10;
+
+        // Bar: baseline
+        setFill(BG2);
+        rect(margin, y, colW, 8, "F");
+        setFill(INK3);
+        rect(margin, y, colW - 60, 8, "F");
+        label("100% OPC baseline", margin + 2, y + 5.5, 7.5, WHITE, "bold");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7.5);
+        setFont(INK2);
+        doc.text("402 kgCO\u2082e/m\u00b3", W - margin - 2, y + 5.5, {
+          align: "right",
+        });
+        y += 12;
+
+        setFill(GREEN_LT);
+        rect(margin, y, colW, 8, "F");
+        label(
+          "\u2193 " +
+            carbonSaving +
+            "% reduction \u2014 " +
+            Math.round((totalCarbon * 500) / 1000) +
+            " tonnes CO\u2082e saved per 500 m\u00b3 pour vs. standard OPC mix",
+          margin + 3,
+          y + 5.5,
+          8,
+          GREEN,
+          "bold",
+        );
+        y += 14;
+
+        // ── TWO-COLUMN BOTTOM ─────────────────────────────────────────
+        const col1X = margin;
+        const col2X = margin + colW / 2 + 3;
+        const halfW = colW / 2 - 3;
+
+        // ASTM Compliance (left)
+        label(
+          "ASTM / ACI COMPLIANCE  \u2014  Rule-based, not ML-inferred",
+          col1X,
+          y,
+          8,
+          INK3,
+          "bold",
+        );
+        y += 5;
+
+        const complianceRows = [
+          [
+            "✓",
+            "Max w/cm \u2264 0.45",
+            "Actual: " + wbActual,
+            "ACI 318 \u00a719.3.2",
+            true,
+          ],
+          [
+            "✓",
+            "Min f'c \u2265 28 MPa (W2)",
+            "Actual: " + strength + " MPa",
+            "ACI 318 \u00a719.3.3",
+            true,
+          ],
+          [
+            "✓",
+            "GGBS meets ASTM C595 Class S",
+            "Confirmed",
+            "ASTM C595-21",
+            true,
+          ],
+          [
+            "✓",
+            "Fly Ash meets ASTM C618 Class C",
+            "Confirmed",
+            "ASTM C618-22",
+            true,
+          ],
+          [
+            "!",
+            "Air entrainment required (F-T)",
+            "Specify AE agent",
+            "ACI 318 \u00a726.4.3",
+            false,
+          ],
+        ];
+
+        complianceRows.forEach((row, i) => {
+          const ry = y + i * 8;
+          setFill(row[4] ? [245, 250, 247] : AMBER_LT);
+          rect(col1X, ry, halfW, 7.5, "F");
+          setDraw([210, 207, 198]);
+          doc.setLineWidth(0.2);
+          doc.rect(col1X, ry, halfW, 7.5, "S");
+          label(row[0], col1X + 2.5, ry + 5, 9, row[4] ? GREEN : AMBER, "bold");
+          label(row[1], col1X + 8, ry + 4.8, 7.5, INK2);
+          label(row[2], col1X + 8, ry + 8.8, 6.5, row[4] ? GREEN : AMBER); // skip — handled by ry offset
+          label(row[3], col1X + halfW - 2, ry + 4.8, 6.5, INK3);
+          // value on right side of rule text
+          doc.setFontSize(6.5);
+          doc.setFont("helvetica", "normal");
+          setFont(INK3);
+          doc.text(row[3], col1X + halfW - 1, ry + 5, { align: "right" });
+          // status value below
+          doc.setFontSize(7);
+          setFont(row[4] ? GREEN : AMBER);
+          doc.text(row[2], col1X + 8, ry + 8.8);
+        });
+
+        // Supplier recommendations (right)
+        const syStart = y;
+        label("RECOMMENDED LOCAL SUPPLIERS", col2X, syStart, 8, INK3, "bold");
+        let sy = syStart + 5;
+
+        const suppliers = [
+          {
+            name: "Lehigh Hanson",
+            loc: "New Britain, CT",
+            dist: "41 mi",
+            mat: "GGBS (C595 Class S)",
+            pref: true,
+          },
+          {
+            name: "Boral Resources",
+            loc: "Taunton, MA",
+            dist: "138 mi",
+            mat: "Fly Ash (C618 Class C)",
+            pref: false,
+          },
+          {
+            name: "Pozzotive",
+            loc: "New Milford, CT",
+            dist: "67 mi",
+            mat: "Natural Pozzolan \u2014 0.04 kgCO\u2082/kg",
+            pref: false,
+          },
+          {
+            name: "Sublime Systems",
+            loc: "Somerville, MA",
+            dist: "102 mi",
+            mat: "Low-carbon cement (emerging)",
+            pref: false,
+          },
+        ];
+
+        suppliers.forEach((s, i) => {
+          const ry = sy + i * 10;
+          setFill(s.pref ? GREEN_LT : BG);
+          rect(col2X, ry, halfW, 9, "F");
+          setDraw([210, 207, 198]);
+          doc.setLineWidth(0.2);
+          doc.rect(col2X, ry, halfW, 9, "S");
+          doc.setFontSize(8);
+          doc.setFont("helvetica", "bold");
+          setFont(INK);
+          doc.text(s.name, col2X + 3, ry + 5);
+          label(s.loc + "  \u00b7  " + s.dist, col2X + 3, ry + 9, 6.5, INK3);
+          label(s.mat, col2X + halfW - 2, ry + 5, 6.5, s.pref ? GREEN : INK3);
+          doc.setFontSize(6.5);
+          setFont(s.pref ? GREEN : INK3);
+          doc.text(s.mat, col2X + halfW - 1, ry + 5, { align: "right" });
+        });
+
+        y = syStart + complianceRows.length * 8 + 8;
+
+        // ── COST BREAKDOWN ────────────────────────────────────────────
+        label("COST BREAKDOWN", margin, y, 8, INK3, "bold");
+        y += 5;
+
+        const costItems = [
+          ["OPC Cement", cem, 0.12, "$120/t"],
+          ["GGBS Slag", slag, 0.075, "$75/t"],
+          ["Fly Ash", ash, 0.055, "$55/t"],
+          ["Coarse Aggregate", ca, 0.032, "$32/t"],
+          ["Fine Aggregate", fa, 0.03, "$30/t"],
+          ["Superplasticizer", sp, 2.5, "$2,500/t"],
+          ["Water", water, 0.001, "$1/t"],
+        ];
+
+        doc.autoTable({
+          startY: y,
+          margin: { left: margin, right: margin },
+          head: [
+            ["Material", "Quantity (kg/m\u00b3)", "Unit Rate", "Cost/m\u00b3"],
+          ],
+          body: [
+            ...costItems.map((r) => [
+              r[0],
+              r[1],
+              r[3],
+              "$" + Math.round(r[1] * r[2]),
+            ]),
+            [
+              "TOTAL",
+              totalKg.toFixed(0) + " kg/m\u00b3",
+              "",
+              "$" +
+                totalCost +
+                "/m\u00b3 (vs. $" +
+                baselineCost +
+                " OPC baseline)",
+            ],
+          ],
+          styles: {
+            fontSize: 8,
+            cellPadding: 2.2,
+            font: "helvetica",
+            textColor: INK2,
+          },
+          headStyles: {
+            fillColor: INK,
+            textColor: WHITE,
+            fontStyle: "bold",
+            fontSize: 7.5,
+          },
+          columnStyles: {
+            0: { cellWidth: 52 },
+            1: { cellWidth: 38, halign: "right" },
+            2: { cellWidth: 30, halign: "center" },
+            3: { cellWidth: 46, halign: "right" },
+          },
+          didParseCell(data) {
+            if (
+              data.row.index === costItems.length &&
+              data.section === "body"
+            ) {
+              data.cell.styles.fillColor = BG2;
+              data.cell.styles.fontStyle = "bold";
+              data.cell.styles.textColor = INK;
+            }
+          },
+        });
+
+        y = doc.lastAutoTable.finalY + 8;
+
+        // ── AI RATIONALE ──────────────────────────────────────────────
+        setFill(AMBER_LT);
+        rect(margin, y, colW, 5, "F");
+        label(
+          "AI-ASSISTED ENGINEERING CONTEXT  \u2014  INFORMATIONAL ONLY  \u2014  NOT A COMPLIANCE DETERMINATION",
+          margin + 3,
+          y + 3.5,
+          7,
+          AMBER,
+          "bold",
+        );
+        y += 7;
+
+        const rationale =
+          "Ternary SCM blend (" +
+          slagPct +
+          "% GGBS + " +
+          ashPct +
+          "% fly ash) selected to minimize embodied carbon while meeting W2 durability requirements per ACI 318-19. GGBS at " +
+          slagPct +
+          "% replacement improves long-term chloride resistance, critical for bridge deck deicing salt exposure. The superplasticizer dose (" +
+          sp +
+          " kg/m\u00b3) maintains workability at low w/cm of " +
+          wbActual +
+          " without increasing water content. Fly ash reduces heat of hydration \u2014 beneficial for a deck slab \u2014 but may extend setting time 30\u201360 min in cool weather. Air entrainment agent must be specified separately per ACI 318 \u00a726.4.3 for freeze-thaw resistance. This rationale is generated by a retrieval-augmented language model and is provided for informational purposes only. All compliance determinations are made by rule-based constraint tables, not by this AI system. The engineer of record is responsible for final specification.";
+
+        setFill([255, 253, 248]);
+        rect(margin, y, colW, 26, "F");
+        setDraw(AMBER_LT);
+        doc.setLineWidth(0.4);
+        doc.rect(margin, y, colW, 26, "S");
+        doc.setFontSize(7.8);
+        doc.setFont("helvetica", "normal");
+        setFont(INK2);
+        const lines = doc.splitTextToSize(rationale, colW - 8);
+        doc.text(lines, margin + 4, y + 5);
+        y += 30;
+
+        // ── PAGE FOOTER ───────────────────────────────────────────────
+        const footY = 285;
+        hRule(footY, BG2);
+        label(
+          "Recrete Tech Prototype V3  \u00b7  ML model trained on UCI Concrete Dataset (Yeh 1998, n=1,030)  \u00b7  Not for regulatory submission without PE review",
+          margin,
+          footY + 4,
+          6.5,
+          INK3,
+        );
+        label("RCT-2025-0612-CT", W - margin, footY + 4, 6.5, INK3);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(6.5);
+        setFont(INK3);
+        doc.text("RCT-2025-0612-CT", W - margin, footY + 4, { align: "right" });
+
+        // ── SAVE ──────────────────────────────────────────────────────
+        doc.save("RCT-2025-0612-CT_MixDesign.pdf");
+
         const note = document.createElement("div");
         note.style.cssText =
-          "position:fixed;bottom:24px;right:24px;background:var(--ink);color:white;padding:12px 20px;border-radius:8px;font-size:13px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,0.2);";
-        note.textContent = "✓ PDF generated: RCT-2025-0612-CT.pdf";
+          "position:fixed;bottom:24px;right:24px;background:#0f1a12;color:white;padding:12px 20px;border-radius:8px;font-size:13px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,0.25);display:flex;align-items:center;gap:8px;";
+        note.innerHTML =
+          '<span style="color:#4a9965;">✓</span> Downloaded: RCT-2025-0612-CT_MixDesign.pdf';
         document.body.appendChild(note);
-        setTimeout(() => note.remove(), 3500);
+        setTimeout(() => note.remove(), 4000);
       }
+
+      // Close modal on overlay click
+      document
+        .getElementById("pdfModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closePdfModal();
+        });
 
       // Close modal on overlay click
       document
