@@ -1061,11 +1061,11 @@
     </header>
 
     <div class="step-bar">
-      <div class="step done" onclick="goToScreen(1)" id="step1-tab">
+      <div class="step active" onclick="goToScreen(1)" id="step1-tab">
         <div class="step-num">✓</div>
         Project Setup
       </div>
-      <div class="step active" onclick="goToScreen(2)" id="step2-tab">
+      <div class="step done" onclick="goToScreen(2)" id="step2-tab">
         <div class="step-num">2</div>
         Optimized Mix
       </div>
@@ -1331,6 +1331,7 @@
           >
             <div>
               <div
+                id="sb-project-name"
                 style="
                   font-family: &quot;Roboto&quot;, sans-serif;
                   font-size: 15px;
@@ -1339,7 +1340,7 @@
               >
                 I-95 Bridge Deck
               </div>
-              <div style="font-size: 11px; color: var(--ink-3)">
+              <div id="sb-project-loc" style="font-size: 11px; color: var(--ink-3)">
                 New Haven, CT · W2 exposure
               </div>
             </div>
@@ -1352,17 +1353,17 @@
             <div class="summary-block-title">Design parameters</div>
             <div class="summary-row">
               <span class="key">Target</span
-              ><span class="val">35 MPa @ 28d</span>
+              ><span class="val" id="sb-target">35 MPa @ 28d</span>
             </div>
             <div class="summary-row">
-              <span class="key">Max w/b</span><span class="val">0.45</span>
+              <span class="key">Max w/b</span><span class="val" id="sb-maxwb">0.45</span>
             </div>
             <div class="summary-row">
               <span class="key">Exposure</span
-              ><span class="val">W2 (ACI 318)</span>
+              ><span class="val" id="sb-exposure">W2 (ACI 318)</span>
             </div>
             <div class="summary-row">
-              <span class="key">Use</span><span class="val">Bridge deck</span>
+              <span class="key">Use</span><span class="val" id="sb-usecase">Bridge deck</span>
             </div>
           </div>
 
@@ -1472,7 +1473,7 @@
       <!-- ====== MAIN CONTENT ====== -->
       <div class="main">
         <!-- SCREEN 1: Project Setup (confirmation state) -->
-        <div class="screen" id="screen1">
+        <div class="screen active" id="screen1">
           <div class="page-title">Project Setup</div>
           <div class="page-subtitle">
             Configure your mix design parameters in the panel to the left, then
@@ -1509,11 +1510,11 @@
         </div>
 
         <!-- SCREEN 2: Optimized Mix Result -->
-        <div class="screen active" id="screen2">
+        <div class="screen" id="screen2">
           <div class="result-header fade-up">
             <div>
               <div class="result-title">Optimized Mix Design</div>
-              <div class="result-subtitle">
+              <div class="result-subtitle" id="s2-subtitle">
                 ML-optimized · Low-carbon · W2 compliant · New Haven, CT
               </div>
             </div>
@@ -1525,56 +1526,36 @@
                 flex-wrap: wrap;
               "
             >
-              <div class="astm-badge astm-pass">
+              <div class="astm-badge astm-pass" id="s2-badge1">
                 ✓ ASTM W2 · ACI 318-19 §19.3.2
               </div>
-              <div class="astm-badge astm-pass">✓ C150 Type I/II</div>
+              <div class="astm-badge astm-pass" id="s2-badge2">✓ C150 Type I/II</div>
             </div>
           </div>
 
           <div class="metric-row fade-up-2">
             <div class="metric-card">
               <div class="metric-label">Predicted strength</div>
-              <div class="metric-value">38.4</div>
-              <div class="metric-unit">MPa @ 28 days</div>
-              <div class="conf-bar-wrap">
-                <div class="conf-bar-track" style="margin-top: 8px">
-                  <div class="conf-range" style="left: 24%; width: 35%"></div>
-                  <div class="conf-point" style="left: 41%"></div>
-                </div>
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    font-size: 10px;
-                    color: var(--ink-3);
-                    margin-top: 3px;
-                  "
-                >
-                  <span>34.1</span
-                  ><span style="color: var(--green); font-weight: 500"
-                    >38.4</span
-                  ><span>42.7</span>
-                </div>
-              </div>
+              <div class="metric-value" id="s2-strength">38.4</div>
+              <div class="metric-unit" id="s2-strength-age">MPa @ 28 days</div>
             </div>
             <div class="metric-card">
               <div class="metric-label">Embodied carbon</div>
-              <div class="metric-value">241</div>
+              <div class="metric-value" id="s2-carbon">241</div>
               <div class="metric-unit">kgCO₂e per m³</div>
-              <div class="metric-delta delta-green">↓ 40% vs. OPC baseline</div>
+              <div class="metric-delta delta-green" id="s2-carbon-delta">↓ 40% vs. OPC baseline</div>
             </div>
             <div class="metric-card">
               <div class="metric-label">Material cost</div>
-              <div class="metric-value">$118</div>
+              <div class="metric-value" id="s2-cost">$118</div>
               <div class="metric-unit">per m³ (est.)</div>
-              <div class="metric-delta delta-green">↓ $9 vs. baseline</div>
+              <div class="metric-delta delta-green" id="s2-cost-delta">↓ $9 vs. baseline</div>
             </div>
             <div class="metric-card">
               <div class="metric-label">w/cm ratio</div>
-              <div class="metric-value">0.42</div>
-              <div class="metric-unit">actual (max 0.45)</div>
-              <div class="metric-delta delta-green">✓ Within ACI limits</div>
+              <div class="metric-value" id="s2-wb">0.42</div>
+              <div class="metric-unit" id="s2-wb-limit">actual (max 0.45)</div>
+              <div class="metric-delta delta-green" id="s2-wb-delta">✓ Within ACI limits</div>
             </div>
           </div>
 
@@ -1606,35 +1587,9 @@
                         <span class="material-name">OPC Cement</span
                         ><span class="material-tag tag-opt">Type I/II</span>
                       </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        218
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                          color: var(--amber);
-                        "
-                      >
-                        185
-                      </td>
-                      <td>
-                        <div
-                          style="display: flex; align-items: center; gap: 6px"
-                        >
-                          <div class="carbon-bar-bg">
-                            <div
-                              class="carbon-bar high"
-                              style="width: 77%"
-                            ></div>
-                          </div>
-                        </div>
-                      </td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-cem">218</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;color:var(--amber);" id="s2-cem-co2">185</td>
+                      <td><div style="display:flex;align-items:center;gap:6px;"><div class="carbon-bar-bg"><div class="carbon-bar high" id="s2-cem-bar" style="width:77%;"></div></div></div></td>
                     </tr>
                     <tr>
                       <td>
@@ -1642,203 +1597,47 @@
                         ><span class="material-tag tag-scm">SCM</span
                         ><span class="material-tag tag-local">Local</span>
                       </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        160
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                          color: var(--green);
-                        "
-                      >
-                        11
-                      </td>
-                      <td>
-                        <div
-                          style="display: flex; align-items: center; gap: 6px"
-                        >
-                          <div class="carbon-bar-bg">
-                            <div class="carbon-bar" style="width: 5%"></div>
-                          </div>
-                        </div>
-                      </td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-slag">160</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;color:var(--green);" id="s2-slag-co2">11</td>
+                      <td><div style="display:flex;align-items:center;gap:6px;"><div class="carbon-bar-bg"><div class="carbon-bar" id="s2-slag-bar" style="width:5%;"></div></div></div></td>
                     </tr>
                     <tr>
                       <td>
                         <span class="material-name">Fly Ash (C)</span
                         ><span class="material-tag tag-scm">SCM</span>
                       </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        60
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                          color: var(--green);
-                        "
-                      >
-                        2
-                      </td>
-                      <td>
-                        <div
-                          style="display: flex; align-items: center; gap: 6px"
-                        >
-                          <div class="carbon-bar-bg">
-                            <div class="carbon-bar" style="width: 1%"></div>
-                          </div>
-                        </div>
-                      </td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-ash">60</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;color:var(--green);" id="s2-ash-co2">2</td>
+                      <td><div style="display:flex;align-items:center;gap:6px;"><div class="carbon-bar-bg"><div class="carbon-bar" id="s2-ash-bar" style="width:1%;"></div></div></div></td>
                     </tr>
                     <tr>
                       <td><span class="material-name">Water</span></td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        185
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                          color: var(--ink-3);
-                        "
-                      >
-                        0.1
-                      </td>
-                      <td>
-                        <div
-                          style="display: flex; align-items: center; gap: 6px"
-                        >
-                          <div class="carbon-bar-bg">
-                            <div class="carbon-bar" style="width: 1%"></div>
-                          </div>
-                        </div>
-                      </td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-water">185</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;color:var(--ink-3);">0.1</td>
+                      <td><div style="display:flex;align-items:center;gap:6px;"><div class="carbon-bar-bg"><div class="carbon-bar" id="s2-water-bar" style="width:1%;"></div></div></div></td>
                     </tr>
                     <tr>
-                      <td>
-                        <span class="material-name">Superplasticizer</span>
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        7.2
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        7
-                      </td>
-                      <td>
-                        <div
-                          style="display: flex; align-items: center; gap: 6px"
-                        >
-                          <div class="carbon-bar-bg">
-                            <div class="carbon-bar" style="width: 3%"></div>
-                          </div>
-                        </div>
-                      </td>
+                      <td><span class="material-name">Superplasticizer</span></td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-sp">7.2</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-sp-co2">7</td>
+                      <td><div style="display:flex;align-items:center;gap:6px;"><div class="carbon-bar-bg"><div class="carbon-bar" id="s2-sp-bar" style="width:3%;"></div></div></div></td>
                     </tr>
                     <tr>
-                      <td>
-                        <span class="material-name">Coarse Aggregate</span>
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        968
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        46
-                      </td>
-                      <td>
-                        <div
-                          style="display: flex; align-items: center; gap: 6px"
-                        >
-                          <div class="carbon-bar-bg">
-                            <div class="carbon-bar" style="width: 19%"></div>
-                          </div>
-                        </div>
-                      </td>
+                      <td><span class="material-name">Coarse Aggregate</span></td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-ca">968</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-ca-co2">46</td>
+                      <td><div style="display:flex;align-items:center;gap:6px;"><div class="carbon-bar-bg"><div class="carbon-bar" id="s2-ca-bar" style="width:19%;"></div></div></div></td>
                     </tr>
                     <tr>
                       <td><span class="material-name">Fine Aggregate</span></td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        749
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                        "
-                      >
-                        4
-                      </td>
-                      <td>
-                        <div
-                          style="display: flex; align-items: center; gap: 6px"
-                        >
-                          <div class="carbon-bar-bg">
-                            <div class="carbon-bar" style="width: 2%"></div>
-                          </div>
-                        </div>
-                      </td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-fa">749</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;" id="s2-fa-co2">4</td>
+                      <td><div style="display:flex;align-items:center;gap:6px;"><div class="carbon-bar-bg"><div class="carbon-bar" id="s2-fa-bar" style="width:2%;"></div></div></div></td>
                     </tr>
                     <tr style="background: var(--bg)">
                       <td style="font-weight: 500">Total</td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                          font-weight: 500;
-                        "
-                      >
-                        2,347
-                      </td>
-                      <td
-                        style="
-                          text-align: right;
-                          font-family: &quot;DM Mono&quot;, monospace;
-                          font-weight: 500;
-                          color: var(--green);
-                        "
-                      >
-                        241
-                      </td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;font-weight:500;" id="s2-total-kg">2,347</td>
+                      <td style="text-align:right;font-family:'DM Mono',monospace;font-weight:500;color:var(--green);" id="s2-total-co2">241</td>
                       <td></td>
                     </tr>
                   </tbody>
@@ -1862,16 +1661,16 @@
                       >ACI 318-19 Table 19.3.2</span
                     >
                   </div>
-                  <div class="compliance-val val-pass">0.42 ≤ 0.45</div>
+                  <div class="compliance-val val-pass" id="s2-comp-wb-val">0.42 ≤ 0.45</div>
                 </div>
                 <div class="compliance-row">
                   <span class="compliance-check">✅</span>
-                  <div class="compliance-rule">
+                  <div class="compliance-rule" id="s2-comp-fc-rule">
                     Min f'c for W2 exposure<br /><span class="compliance-source"
                       >ACI 318-19 §19.3.3</span
                     >
                   </div>
-                  <div class="compliance-val val-pass">38.4 ≥ 28 MPa</div>
+                  <div class="compliance-val val-pass" id="s2-comp-fc-val">38.4 ≥ 28 MPa</div>
                 </div>
                 <div class="compliance-row">
                   <span class="compliance-check">✅</span>
@@ -1916,70 +1715,29 @@
                 </div>
                 <div class="carbon-compare">
                   <div class="compare-row">
-                    <div
-                      class="compare-label"
-                      style="font-size: 11px; font-weight: 500"
-                    >
+                    <div class="compare-label" style="font-size: 11px; font-weight: 500">
                       This mix (optimized)
                     </div>
                     <div class="compare-bar-wrap">
                       <div class="compare-bar-bg">
-                        <div
-                          class="compare-bar-fill bar-optimized"
-                          style="width: 60%"
-                        ></div>
+                        <div class="compare-bar-fill bar-optimized" id="s2-compare-bar" style="width: 60%"></div>
                       </div>
                     </div>
-                    <div class="compare-val" style="color: var(--green)">
-                      241 kgCO₂e
-                    </div>
+                    <div class="compare-val" style="color: var(--green)" id="s2-compare-this-val">241 kgCO₂e</div>
                   </div>
                   <div class="compare-row">
-                    <div class="compare-label" style="font-size: 11px">
-                      100% OPC baseline
-                    </div>
+                    <div class="compare-label" style="font-size: 11px">100% OPC baseline</div>
                     <div class="compare-bar-wrap">
                       <div class="compare-bar-bg">
-                        <div
-                          class="compare-bar-fill bar-baseline"
-                          style="width: 100%"
-                        ></div>
+                        <div class="compare-bar-fill bar-baseline" style="width: 100%"></div>
                       </div>
                     </div>
                     <div class="compare-val">402 kgCO₂e</div>
                   </div>
-                  <div
-                    style="
-                      margin-top: 12px;
-                      padding-top: 12px;
-                      border-top: 1px solid var(--border);
-                      display: flex;
-                      align-items: center;
-                      justify-content: space-between;
-                    "
-                  >
-                    <div style="font-size: 12px; color: var(--ink-3)">
-                      Reduction:
-                      <strong style="color: var(--green)"
-                        >161 kgCO₂e/m³ (40%)</strong
-                      >
+                  <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:12px;color:var(--ink-3);">
+                      <strong style="color:var(--green)" id="s2-compare-saving">40% reduction — 80 tonnes CO₂e saved per 500 m³ pour</strong>
                     </div>
-                    <div style="font-size: 11px; color: var(--ink-3)">
-                      = 0.64 kg/MPa·m³
-                    </div>
-                  </div>
-                  <div
-                    style="
-                      margin-top: 10px;
-                      background: var(--green-light);
-                      border-radius: 6px;
-                      padding: 10px 12px;
-                      font-size: 12px;
-                      color: var(--green);
-                    "
-                  >
-                    At 500 m³ pour: <strong>80.5 tonnes CO₂e saved</strong> vs.
-                    standard OPC mix
                   </div>
                 </div>
               </div>
@@ -1990,92 +1748,44 @@
                   <div class="section-card-title">
                     <span class="icon-dot dot-green"></span>Local suppliers
                   </div>
-                  <div style="font-size: 11px; color: var(--ink-3)">
+                  <div style="font-size: 11px; color: var(--ink-3)" id="s2-supplier-header">
                     Within 300 mi · New Haven, CT
                   </div>
                 </div>
-                <div class="supplier-grid">
+                <div class="supplier-grid" id="s2-supplier-grid">
                   <div class="supplier-card">
                     <div class="supplier-distance">41 mi</div>
                     <div class="supplier-name">Lehigh Hanson</div>
                     <div class="supplier-meta">New Britain, CT · GGBS</div>
                     <div class="supplier-tags">
-                      <span
-                        class="pill-tag"
-                        style="
-                          background: var(--green-light);
-                          color: var(--green);
-                        "
-                        >ASTM C595</span
-                      >
+                      <span class="pill-tag" style="background:var(--green-light);color:var(--green);">ASTM C595</span>
                       <span class="supplier-local-badge">Preferred</span>
                     </div>
                   </div>
                   <div class="supplier-card">
                     <div class="supplier-distance">67 mi</div>
                     <div class="supplier-name">Pozzotive</div>
-                    <div class="supplier-meta">
-                      New Milford, CT · Natural pozzolan
-                    </div>
+                    <div class="supplier-meta">New Milford, CT · Natural pozzolan</div>
                     <div class="supplier-tags">
-                      <span
-                        class="pill-tag"
-                        style="
-                          background: var(--green-light);
-                          color: var(--green);
-                        "
-                        >ASTM C618-N</span
-                      >
-                      <span
-                        class="pill-tag"
-                        style="
-                          background: var(--amber-light);
-                          color: var(--amber);
-                        "
-                        >Low carbon</span
-                      >
+                      <span class="pill-tag" style="background:var(--green-light);color:var(--green);">ASTM C618-N</span>
+                      <span class="pill-tag" style="background:var(--amber-light);color:var(--amber);">Low carbon</span>
                     </div>
                   </div>
                   <div class="supplier-card">
                     <div class="supplier-distance">102 mi</div>
                     <div class="supplier-name">Sublime Systems</div>
-                    <div class="supplier-meta">
-                      Somerville, MA · Low-carbon cement
-                    </div>
+                    <div class="supplier-meta">Somerville, MA · Low-carbon cement</div>
                     <div class="supplier-tags">
-                      <span
-                        class="pill-tag"
-                        style="
-                          background: var(--blue-light);
-                          color: var(--blue);
-                        "
-                        >Emerging</span
-                      >
-                      <span
-                        class="pill-tag"
-                        style="
-                          background: var(--amber-light);
-                          color: var(--amber);
-                        "
-                        >~0.12 kgCO₂/kg</span
-                      >
+                      <span class="pill-tag" style="background:var(--blue-light);color:var(--blue);">Emerging</span>
+                      <span class="pill-tag" style="background:var(--amber-light);color:var(--amber);">~0.12 kgCO₂/kg</span>
                     </div>
                   </div>
                   <div class="supplier-card">
                     <div class="supplier-distance">138 mi</div>
                     <div class="supplier-name">Boral Resources</div>
-                    <div class="supplier-meta">
-                      Taunton, MA · Class C fly ash
-                    </div>
+                    <div class="supplier-meta">Taunton, MA · Class C fly ash</div>
                     <div class="supplier-tags">
-                      <span
-                        class="pill-tag"
-                        style="
-                          background: var(--green-light);
-                          color: var(--green);
-                        "
-                        >ASTM C618-C</span
-                      >
+                      <span class="pill-tag" style="background:var(--green-light);color:var(--green);">ASTM C618-C</span>
                     </div>
                   </div>
                 </div>
@@ -2085,37 +1795,15 @@
               <div class="section-card">
                 <div class="section-card-header">
                   <div class="section-card-title">
-                    <span class="icon-dot dot-amber"></span>Engineering
-                    rationale
+                    <span class="icon-dot dot-amber"></span>Engineering rationale
                   </div>
                 </div>
                 <div class="rationale-body">
-                  <div class="rationale-tag">
-                    ⚡ AI-assisted · qualitative only · not compliance
-                  </div>
-                  <div class="rationale-text">
-                    <p>
-                      The optimizer selected a ternary blend replacing 51% of
-                      OPC with GGBS (36%) and Class C fly ash (14%). At W2
-                      exposure for a bridge deck, ACI 318-19 §19.3.2 requires
-                      w/cm ≤ 0.45 and f'c ≥ 28 MPa — both satisfied with margin.
-                    </p>
-                    <p>
-                      GGBS at 36% replacement improves long-term durability by
-                      refining pore structure and reducing chloride
-                      permeability, which is critical for deicing salt exposure.
-                      The superplasticizer dose (7.2 kg/m³) maintains
-                      workability at a low w/cm of 0.42 without increasing water
-                      content.
-                    </p>
-                    <p>
-                      The 60 kg/m³ fly ash contribution reduces heat of
-                      hydration — beneficial for a deck slab — while further
-                      lowering carbon. Note: fly ash at this dose may extend
-                      setting time by 30–60 min in cool weather. Air entrainment
-                      should be specified separately per ACI 318 §26.4.3 for
-                      freeze-thaw resistance.
-                    </p>
+                  <div class="rationale-tag">⚡ AI-assisted · qualitative only · not compliance</div>
+                  <div class="rationale-text" id="s2-rationale-text">
+                    <p>The optimizer selected a ternary blend replacing 51% of OPC with GGBS (36%) and Class C fly ash (14%). At W2 exposure for a bridge deck, ACI 318-19 §19.3.2 requires w/cm ≤ 0.45 and f'c ≥ 28 MPa — both satisfied with margin.</p>
+                    <p>GGBS at 36% replacement improves long-term durability by refining pore structure and reducing chloride permeability, which is critical for deicing salt exposure. The superplasticizer dose (7.2 kg/m³) maintains workability at a low w/cm of 0.42 without increasing water content.</p>
+                    <p>The 60 kg/m³ fly ash contribution reduces heat of hydration — beneficial for a deck slab — while further lowering carbon. Note: fly ash at this dose may extend setting time by 30–60 min in cool weather. Air entrainment should be specified separately per ACI 318 §26.4.3 for freeze-thaw resistance.</p>
                   </div>
                 </div>
               </div>
@@ -2154,7 +1842,7 @@
             <div class="metric-card">
               <div class="metric-label">Predicted strength</div>
               <div class="metric-value" id="e-strength">38.4</div>
-              <div class="metric-unit">MPa @ 28 days</div>
+              <div class="metric-unit" id="e-strength-age">MPa @ 28 days</div>
               <div class="metric-delta delta-green" id="e-strength-delta">
                 ✓ Meets 35 MPa target
               </div>
@@ -2570,62 +2258,19 @@
             </div>
 
             <!-- Project info -->
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-                margin-bottom: 24px;
-              "
-            >
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
               <div>
-                <div
-                  style="
-                    font-family: &quot;DM Mono&quot;, monospace;
-                    font-size: 10px;
-                    letter-spacing: 0.1em;
-                    text-transform: uppercase;
-                    color: var(--ink-3);
-                    margin-bottom: 8px;
-                  "
-                >
-                  Project
-                </div>
-                <div style="font-size: 13px; font-weight: 500">
-                  I-95 Bridge Deck, Span 4
-                </div>
-                <div style="font-size: 12px; color: var(--ink-3)">
-                  New Haven, Connecticut
-                </div>
-                <div style="font-size: 12px; color: var(--ink-3)">
-                  Structural Engineer: [Name]
-                </div>
+                <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Project</div>
+                <div style="font-size:13px;font-weight:500;" id="r4-project-name">I-95 Bridge Deck, Span 4</div>
+                <div style="font-size:12px;color:var(--ink-3);" id="r4-location">New Haven, CT</div>
+                <div style="font-size:12px;color:var(--ink-3);">Structural Engineer: [Name]</div>
               </div>
               <div>
-                <div
-                  style="
-                    font-family: &quot;DM Mono&quot;, monospace;
-                    font-size: 10px;
-                    letter-spacing: 0.1em;
-                    text-transform: uppercase;
-                    color: var(--ink-3);
-                    margin-bottom: 8px;
-                  "
-                >
-                  Design criteria
-                </div>
-                <div style="font-size: 12px">
-                  Target f'c: <strong>35 MPa @ 28 days</strong>
-                </div>
-                <div style="font-size: 12px">
-                  Exposure: <strong>W2 (ACI 318-19)</strong>
-                </div>
-                <div style="font-size: 12px">
-                  Max w/cm: <strong>0.45</strong>
-                </div>
-                <div style="font-size: 12px">
-                  Use: <strong>Bridge deck (freeze-thaw)</strong>
-                </div>
+                <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Design criteria</div>
+                <div style="font-size:12px;"><span id="r4-criteria-fc">Target f'c: </span><strong id="r4-criteria-fc-val">35 MPa @ 28 days</strong></div>
+                <div style="font-size:12px;"><span id="r4-criteria-exp">Exposure: </span><strong id="r4-criteria-exp-val">W2 (ACI 318-19)</strong></div>
+                <div style="font-size:12px;"><span id="r4-criteria-wb">Max w/cm: </span><strong id="r4-criteria-wb-val">0.45</strong></div>
+                <div style="font-size:12px;"><span id="r4-criteria-use">Use: </span><strong id="r4-criteria-use-val">Bridge deck (freeze-thaw)</strong></div>
               </div>
             </div>
 
@@ -2971,207 +2616,55 @@
             </div>
 
             <!-- Performance specs -->
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 12px;
-                margin-bottom: 24px;
-              "
-            >
-              <div
-                style="
-                  background: var(--bg);
-                  border-radius: 8px;
-                  padding: 12px;
-                  text-align: center;
-                "
-              >
-                <div
-                  style="
-                    font-family: &quot;DM Mono&quot;, monospace;
-                    font-size: 10px;
-                    color: var(--ink-3);
-                    margin-bottom: 4px;
-                  "
-                >
-                  PREDICTED f'c
-                </div>
-                <div
-                  style="
-                    font-family: &quot;Roboto&quot;, sans-serif;
-                    font-size: 22px;
-                    font-weight: 300;
-                  "
-                >
-                  38.4 MPa
-                </div>
-                <div style="font-size: 10px; color: var(--green)">
-                  95% CI: 34.1–42.7
-                </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;">
+              <div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-3);margin-bottom:4px;">PREDICTED f'c</div>
+                <div style="font-family:'Roboto',sans-serif;font-size:22px;font-weight:300;" id="r4-strength-val">38.4 MPa</div>
+                <div style="font-size:10px;color:var(--green);" id="r4-strength-ci">95% CI: 34.1–42.7</div>
               </div>
-              <div
-                style="
-                  background: var(--green-light);
-                  border-radius: 8px;
-                  padding: 12px;
-                  text-align: center;
-                "
-              >
-                <div
-                  style="
-                    font-family: &quot;DM Mono&quot;, monospace;
-                    font-size: 10px;
-                    color: var(--green);
-                    margin-bottom: 4px;
-                  "
-                >
-                  CARBON SAVINGS
-                </div>
-                <div
-                  style="
-                    font-family: &quot;Roboto&quot;, sans-serif;
-                    font-size: 22px;
-                    font-weight: 300;
-                    color: var(--green);
-                  "
-                >
-                  40%
-                </div>
-                <div style="font-size: 10px; color: var(--green)">
-                  vs. OPC baseline
-                </div>
+              <div style="background:var(--green-light);border-radius:8px;padding:12px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--green);margin-bottom:4px;">CARBON SAVINGS</div>
+                <div style="font-family:'Roboto',sans-serif;font-size:22px;font-weight:300;color:var(--green);" id="r4-carbon-pct">40%</div>
+                <div style="font-size:10px;color:var(--green);" id="r4-carbon-sub">vs. OPC baseline</div>
               </div>
-              <div
-                style="
-                  background: var(--bg);
-                  border-radius: 8px;
-                  padding: 12px;
-                  text-align: center;
-                "
-              >
-                <div
-                  style="
-                    font-family: &quot;DM Mono&quot;, monospace;
-                    font-size: 10px;
-                    color: var(--ink-3);
-                    margin-bottom: 4px;
-                  "
-                >
-                  MATERIAL COST
-                </div>
-                <div
-                  style="
-                    font-family: &quot;Roboto&quot;, sans-serif;
-                    font-size: 22px;
-                    font-weight: 300;
-                  "
-                >
-                  $118/m³
-                </div>
-                <div style="font-size: 10px; color: var(--green)">
-                  ↓ $9 vs. baseline
-                </div>
+              <div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-3);margin-bottom:4px;">MATERIAL COST</div>
+                <div style="font-family:'Roboto',sans-serif;font-size:22px;font-weight:300;" id="r4-cost-val">$118/m³</div>
+                <div style="font-size:10px;color:var(--green);" id="r4-cost-sub">↓ $9 vs. baseline</div>
               </div>
             </div>
 
             <!-- Compliance -->
-            <div style="margin-bottom: 24px">
-              <div
-                style="
-                  font-family: &quot;DM Mono&quot;, monospace;
-                  font-size: 10px;
-                  letter-spacing: 0.1em;
-                  text-transform: uppercase;
-                  color: var(--ink-3);
-                  margin-bottom: 8px;
-                "
-              >
-                ASTM / ACI compliance (rule-based)
-              </div>
-              <table
-                style="width: 100%; border-collapse: collapse; font-size: 11px"
-              >
-                <tr style="border-bottom: 1px solid var(--border)">
-                  <td style="padding: 6px 8px">✅ Max w/cm ≤ 0.45</td>
-                  <td
-                    style="
-                      padding: 6px 8px;
-                      text-align: right;
-                      font-family: &quot;DM Mono&quot;, monospace;
-                      color: var(--green);
-                    "
-                  >
-                    Actual: 0.42
-                  </td>
-                  <td
-                    style="
-                      padding: 6px 8px;
-                      text-align: right;
-                      color: var(--ink-3);
-                    "
-                  >
-                    ACI 318 §19.3.2
-                  </td>
+            <div style="margin-bottom:24px;">
+              <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">ASTM / ACI compliance (rule-based)</div>
+              <table style="width:100%;border-collapse:collapse;font-size:11px;">
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:6px 8px;">✅ Max w/cm</td>
+                  <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;color:var(--green);" id="r4-comp-wb">Actual: 0.42 (limit 0.45)</td>
+                  <td style="padding:6px 8px;text-align:right;color:var(--ink-3);">ACI 318 §19.3.2</td>
                 </tr>
-                <tr style="border-bottom: 1px solid var(--border)">
-                  <td style="padding: 6px 8px">✅ Min f'c ≥ 28 MPa (W2)</td>
-                  <td
-                    style="
-                      padding: 6px 8px;
-                      text-align: right;
-                      font-family: &quot;DM Mono&quot;, monospace;
-                      color: var(--green);
-                    "
-                  >
-                    38.4 MPa
-                  </td>
-                  <td
-                    style="
-                      padding: 6px 8px;
-                      text-align: right;
-                      color: var(--ink-3);
-                    "
-                  >
-                    ACI 318 §19.3.3
-                  </td>
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:6px 8px;">✅ Min f'c</td>
+                  <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;color:var(--green);" id="r4-comp-fc">Actual: 38.4 MPa (min 28 MPa)</td>
+                  <td style="padding:6px 8px;text-align:right;color:var(--ink-3);">ACI 318 §19.3.3</td>
                 </tr>
-                <tr style="border-bottom: 1px solid var(--border)">
-                  <td style="padding: 6px 8px">✅ GGBS — ASTM C595 Class S</td>
-                  <td
-                    style="
-                      padding: 6px 8px;
-                      text-align: right;
-                      font-family: &quot;DM Mono&quot;, monospace;
-                      color: var(--green);
-                    "
-                  >
-                    Confirmed
-                  </td>
-                  <td
-                    style="
-                      padding: 6px 8px;
-                      text-align: right;
-                      color: var(--ink-3);
-                    "
-                  >
-                    ASTM C595-21
-                  </td>
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:6px 8px;">✅ GGBS — ASTM C595 Class S</td>
+                  <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;color:var(--green);">Confirmed</td>
+                  <td style="padding:6px 8px;text-align:right;color:var(--ink-3);">ASTM C595-21</td>
                 </tr>
-                <tr style="border-bottom: 1px solid var(--border)">
-                  <td style="padding: 6px 8px">
-                    ✅ Fly ash — ASTM C618 Class C
-                  </td>
-                  <td
-                    style="
-                      padding: 6px 8px;
-                      text-align: right;
-                      font-family: &quot;DM Mono&quot;, monospace;
-                      color: var(--green);
-                    "
-                  >
-                    Confirmed
-                  </td>
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:6px 8px;">✅ Fly ash — ASTM C618 Class C</td>
+                  <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;color:var(--green);">Confirmed</td>
+                  <td style="padding:6px 8px;text-align:right;color:var(--ink-3);">ASTM C618-22</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 8px;">⚠️ Air entrainment required</td>
+                  <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;color:var(--amber);">Specify separately</td>
+                  <td style="padding:6px 8px;text-align:right;color:var(--ink-3);">ACI 318 §26.4.3</td>
+                </tr>
+              </table>
+            </div>
                   <td
                     style="
                       padding: 6px 8px;
@@ -3208,63 +2701,21 @@
             </div>
 
             <!-- Supplier notes -->
-            <div style="margin-bottom: 20px">
-              <div
-                style="
-                  font-family: &quot;DM Mono&quot;, monospace;
-                  font-size: 10px;
-                  letter-spacing: 0.1em;
-                  text-transform: uppercase;
-                  color: var(--ink-3);
-                  margin-bottom: 8px;
-                "
-              >
-                Recommended suppliers
-              </div>
-              <div
-                style="font-size: 12px; line-height: 1.8; color: var(--ink-2)"
-              >
-                <strong>GGBS:</strong> Lehigh Hanson, New Britain CT (41 mi) —
-                ASTM C595 Class S certified<br />
-                <strong>Fly Ash:</strong> Boral Resources, Taunton MA (138 mi) —
-                ASTM C618 Class C<br />
-                <strong>Alternative SCM:</strong> Pozzotive, New Milford CT (67
-                mi) — Natural pozzolan, 0.04 kgCO₂/kg<br />
-                <strong>Note:</strong> Sublime Systems (Somerville MA) emerging
-                low-carbon cement suitable for partial OPC replacement in future
-                designs.
+            <div style="margin-bottom:20px;">
+              <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Recommended suppliers</div>
+              <div id="r4-suppliers" style="font-size:12px;line-height:1.8;color:var(--ink-2);">
+                <strong>GGBS:</strong> Lehigh Hanson, New Britain CT (41 mi) — ASTM C595 Class S certified<br/>
+                <strong>Fly Ash:</strong> Boral Resources, Taunton MA (138 mi) — ASTM C618 Class C<br/>
+                <strong>Alternative SCM:</strong> Pozzotive, New Milford CT (67 mi) — Natural pozzolan, 0.04 kgCO₂/kg<br/>
+                <strong>Note:</strong> Sublime Systems (Somerville MA) emerging low-carbon cement suitable for partial OPC replacement in future designs.
               </div>
             </div>
 
             <!-- Rationale -->
-            <div
-              style="
-                background: var(--amber-light);
-                border-radius: 8px;
-                padding: 14px 16px;
-                margin-bottom: 0;
-              "
-            >
-              <div
-                style="
-                  font-family: &quot;DM Mono&quot;, monospace;
-                  font-size: 10px;
-                  color: var(--amber);
-                  margin-bottom: 6px;
-                  letter-spacing: 0.06em;
-                "
-              >
-                AI-ASSISTED ENGINEERING CONTEXT — INFORMATIONAL ONLY
-              </div>
-              <div
-                style="font-size: 11px; color: var(--ink-2); line-height: 1.6"
-              >
-                Ternary SCM blend (36% GGBS + 14% fly ash) selected to minimize
-                embodied carbon while meeting W2 durability requirements. GGBS
-                improves chloride resistance critical for bridge deck deicing
-                salt exposure. Superplasticizer maintains workability at w/cm
-                0.42. Air entrainment agent to be specified by EOR per ACI 318
-                §26.4.3.
+            <div style="background:var(--amber-light);border-radius:8px;padding:14px 16px;margin-bottom:0;">
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);margin-bottom:6px;letter-spacing:0.06em;">AI-ASSISTED ENGINEERING CONTEXT — INFORMATIONAL ONLY</div>
+              <div id="r4-rationale" style="font-size:11px;color:var(--ink-2);line-height:1.6;">
+                Ternary SCM blend (36% GGBS + 14% fly ash) selected to minimize embodied carbon while meeting W2 durability requirements. GGBS improves chloride resistance critical for bridge deck deicing salt exposure. Superplasticizer maintains workability at w/cm 0.42. Air entrainment agent to be specified by EOR per ACI 318 §26.4.3.
               </div>
             </div>
           </div>
@@ -3288,81 +2739,438 @@
 
     <script>
       // ========= STATE =========
-      let currentScreen = 2;
+      let currentScreen = 1;
 
-      const CARBON_FACTORS = {
-        cem: 0.85,
-        slag: 0.07,
-        ash: 0.027,
-        water: 0.0003,
-        sp: 1.0,
-        ca: 0.048,
-        fa: 0.005,
+      // Central project state — populated from form on Optimize, read everywhere else
+      const PROJECT = {
+        name:         'I-95 Bridge Deck, Span 4',
+        city:         'New Haven',
+        state:        'Connecticut',
+        stateAbbr:    'CT',
+        targetMPa:    35,
+        maxWB:        0.45,
+        cureAge:      '28 days',
+        exposure:     'W2',
+        exposureDesc: 'Moderate water exposure, freeze-thaw',
+        useCase:      'Bridge deck',
+        maxSCMPct:    50,
+        // Derived ASTM limits (updated when exposure changes)
+        astmMinMPa:   28,
+        astmMaxWCM:   0.45,
+        // Optimized mix (set after optimization runs)
+        mix: { cem: 218, slag: 160, ash: 60, water: 185, sp: 7.2, ca: 968, fa: 749 },
       };
-      const COST_FACTORS = {
-        cem: 0.12,
-        slag: 0.075,
-        ash: 0.055,
-        water: 0.001,
-        sp: 2.5,
-        ca: 0.032,
-        fa: 0.03,
+
+      // ASTM constraint lookup by exposure class
+      const ASTM_LIMITS = {
+        W0: { minMPa: 17, maxWCM: 0.70, note: 'No freeze-thaw requirement' },
+        W1: { minMPa: 21, maxWCM: 0.60, note: 'Mild freeze-thaw' },
+        W2: { minMPa: 28, maxWCM: 0.45, note: 'Moderate freeze-thaw + deicing' },
+        S0: { minMPa: 17, maxWCM: 0.70, note: 'Negligible sulfate' },
+        S1: { minMPa: 28, maxWCM: 0.50, note: 'Moderate sulfate exposure' },
+        S2: { minMPa: 31, maxWCM: 0.45, note: 'Severe sulfate — Type V cement' },
+      };
+
+      // Age multiplier for strength prediction
+      const AGE_FACTOR = { '7 days': 0.72, '28 days': 1.0, '56 days': 1.12, '90 days': 1.18 };
+
+      const CARBON_FACTORS = { cem: 0.85, slag: 0.07, ash: 0.027, water: 0.0003, sp: 1.0, ca: 0.048, fa: 0.005 };
+      const COST_FACTORS   = { cem: 0.12, slag: 0.075, ash: 0.055, water: 0.001, sp: 2.5, ca: 0.032, fa: 0.03 };
+
+      // Supplier DB keyed by state abbreviation
+      const SUPPLIERS = {
+        CT: [
+          { name: 'Lehigh Hanson',   loc: 'New Britain, CT',  dist: '41 mi',  mat: 'GGBS (C595 Class S)',              pref: true  },
+          { name: 'Pozzotive',       loc: 'New Milford, CT',  dist: '67 mi',  mat: 'Natural Pozzolan — 0.04 kgCO₂/kg', pref: false },
+          { name: 'Boral Resources', loc: 'Taunton, MA',      dist: '138 mi', mat: 'Fly Ash (C618 Class C)',            pref: false },
+          { name: 'Sublime Systems', loc: 'Somerville, MA',   dist: '102 mi', mat: 'Low-carbon cement (emerging)',      pref: false },
+        ],
+        MA: [
+          { name: 'Sublime Systems', loc: 'Somerville, MA',   dist: '8 mi',   mat: 'Low-carbon cement (emerging)',      pref: true  },
+          { name: 'Boral Resources', loc: 'Taunton, MA',      dist: '35 mi',  mat: 'Fly Ash (C618 Class C)',            pref: false },
+          { name: 'Lehigh Hanson',   loc: 'New Britain, CT',  dist: '92 mi',  mat: 'GGBS (C595 Class S)',              pref: false },
+          { name: 'Pozzotive',       loc: 'New Milford, CT',  dist: '110 mi', mat: 'Natural Pozzolan — 0.04 kgCO₂/kg', pref: false },
+        ],
+        NY: [
+          { name: 'Argos USA',       loc: 'Ravena, NY',       dist: '55 mi',  mat: 'OPC / Blended Cement (C595)',       pref: true  },
+          { name: 'Lehigh Hanson',   loc: 'New Britain, CT',  dist: '130 mi', mat: 'GGBS (C595 Class S)',              pref: false },
+          { name: 'Boral Resources', loc: 'Taunton, MA',      dist: '210 mi', mat: 'Fly Ash (C618 Class C)',            pref: false },
+          { name: 'Sublime Systems', loc: 'Somerville, MA',   dist: '220 mi', mat: 'Low-carbon cement (emerging)',      pref: false },
+        ],
+        NJ: [
+          { name: 'Martin Marietta', loc: 'Bedminster, NJ',   dist: '22 mi',  mat: 'Coarse Aggregate (C33)',            pref: true  },
+          { name: 'Argos USA',       loc: 'Ravena, NY',       dist: '190 mi', mat: 'OPC / Blended Cement (C595)',       pref: false },
+          { name: 'Lehigh Hanson',   loc: 'New Britain, CT',  dist: '145 mi', mat: 'GGBS (C595 Class S)',              pref: false },
+          { name: 'Boral Resources', loc: 'Taunton, MA',      dist: '270 mi', mat: 'Fly Ash (C618 Class C)',            pref: false },
+        ],
+        RI: [
+          { name: 'Boral Resources', loc: 'Taunton, MA',      dist: '18 mi',  mat: 'Fly Ash (C618 Class C)',            pref: true  },
+          { name: 'Lehigh Hanson',   loc: 'New Britain, CT',  dist: '80 mi',  mat: 'GGBS (C595 Class S)',              pref: false },
+          { name: 'Sublime Systems', loc: 'Somerville, MA',   dist: '55 mi',  mat: 'Low-carbon cement (emerging)',      pref: false },
+          { name: 'Pozzotive',       loc: 'New Milford, CT',  dist: '100 mi', mat: 'Natural Pozzolan — 0.04 kgCO₂/kg', pref: false },
+        ],
+      };
+
+      const STATE_ABBR = {
+        Connecticut: 'CT', Massachusetts: 'MA', 'New York': 'NY', 'New Jersey': 'NJ', 'Rhode Island': 'RI'
       };
 
       function v(id) {
         return parseFloat(document.getElementById(id).value) || 0;
       }
 
-      // ========= NAVIGATION =========
-      function goToScreen(n) {
-        document
-          .querySelectorAll(".screen")
-          .forEach((s) => s.classList.remove("active"));
-        document.getElementById("screen" + n).classList.add("active");
-        currentScreen = n;
+      // ========= COMPUTE OPTIMIZED MIX FROM PROJECT INPUTS =========
+      function computeOptimizedMix() {
+        // Simulate ML optimizer: adjust proportions based on target strength, w/b, exposure, age, SCM cap
+        const targetMPa  = PROJECT.targetMPa;
+        const maxWB      = PROJECT.maxWB;
+        const ageFactor  = AGE_FACTOR[PROJECT.cureAge] || 1.0;
+        const maxSCMFrac = PROJECT.maxSCMPct / 100;
 
-        ["step1-tab", "step2-tab", "step3-tab", "step4-tab"].forEach(
-          (id, i) => {
-            const el = document.getElementById(id);
-            el.className = "step";
-            if (i + 1 < n)
-              ((el.className = "step done"),
-                (el.querySelector(".step-num").textContent = "✓"));
-            else if (i + 1 === n) el.className = "step active";
-            else el.querySelector(".step-num").textContent = i + 1;
-          },
-        );
+        // Base binder needed (inverse of strength model): strength ≈ -20 + cem*0.055 + slag*0.028 + ash*0.015 + sp*0.5 - water*0.12 + 8.5
+        // Target effective strength accounting for age
+        const effectiveTarget = targetMPa / ageFactor;
 
-        document.getElementById("sidebar-screen1").style.display =
-          n === 1 ? "block" : "none";
-        document.getElementById("sidebar-results").style.display =
-          n > 1 ? "block" : "none";
+        // Heuristic optimizer: start with binder budget
+        // More conservative for high exposure classes
+        const exposureBinderBoost = { W0: 0.9, W1: 0.95, W2: 1.0, S0: 0.9, S1: 1.0, S2: 1.1 }[PROJECT.exposure] || 1.0;
+        const baseCem = Math.max(150, Math.min(400, Math.round((effectiveTarget + 20 - 8.5) / 0.055 * exposureBinderBoost)));
 
-        if (n === 3) renderLiveEdit();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // SCM allocation: slag preferred for W2/S classes (chloride resistance), ash for heat reduction
+        const totalBinderBudget = Math.round(baseCem * 1.4); // allow up to 40% more total binder
+        const maxSCM = Math.min(Math.round(totalBinderBudget * maxSCMFrac), 360);
+        const slagFrac = (PROJECT.exposure === 'W2' || PROJECT.exposure.startsWith('S')) ? 0.70 : 0.55;
+        const slag = Math.round(Math.min(maxSCM * slagFrac, 280));
+        const ash  = Math.round(Math.min(maxSCM - slag, 120));
+        const cem  = Math.max(150, Math.round(totalBinderBudget - slag - ash));
+
+        // Water: target w/b = min(maxWB - 0.03, 0.44)
+        const actualWB = Math.min(maxWB - 0.02, 0.44);
+        const water = Math.round((cem + slag + ash) * actualWB);
+
+        // SP: higher dose compensates for lower w/b
+        const sp = parseFloat(Math.max(0, Math.min(20, ((0.44 - actualWB) * 120 + 4))).toFixed(1));
+
+        // Aggregates: remainder of unit volume (approx 2350 kg/m3 target unit weight)
+        const binderWaterSp = cem + slag + ash + water + sp;
+        const aggTotal = Math.max(1400, 2350 - binderWaterSp);
+        const ca = Math.round(aggTotal * 0.563);
+        const fa = aggTotal - ca;
+
+        return { cem, slag, ash, water, sp, ca, fa };
       }
 
-      // ========= OPTIMIZATION SIMULATION =========
+      // ========= APPLY PROJECT STATE TO ALL SCREENS =========
+      function applyProjectToAllScreens() {
+        const p = PROJECT;
+        const m = p.mix;
+        const limits = ASTM_LIMITS[p.exposure] || ASTM_LIMITS.W2;
+
+        // ── Compute derived values ──
+        const binder      = m.cem + m.slag + m.ash;
+        const wbActual    = +(m.water / binder).toFixed(2);
+        const ageFactor   = AGE_FACTOR[p.cureAge] || 1.0;
+        let strength = 35.4;
+        strength = +(Math.max(5, Math.min(82, strength)) * ageFactor).toFixed(1);
+        const strengthLow  = +(strength - 4.3).toFixed(1);
+        const strengthHigh = +(strength + 4.3).toFixed(1);
+        const totalKg     = m.cem + m.slag + m.ash + m.water + m.sp + m.ca + m.fa;
+
+        const carbonCem   = +(m.cem   * CARBON_FACTORS.cem).toFixed(1);
+        const carbonSlag  = +(m.slag  * CARBON_FACTORS.slag).toFixed(1);
+        const carbonAsh   = +(m.ash   * CARBON_FACTORS.ash).toFixed(1);
+        const carbonSp    = +(m.sp    * CARBON_FACTORS.sp).toFixed(1);
+        const carbonCa    = +(m.ca    * CARBON_FACTORS.ca).toFixed(1);
+        const carbonFa    = +(m.fa    * CARBON_FACTORS.fa).toFixed(1);
+        const totalCarbon = Math.round(carbonCem + carbonSlag + carbonAsh + 0.1 + carbonSp + carbonCa + carbonFa);
+        const baselineCarbon = 402;
+        const carbonPct   = Math.round((1 - totalCarbon / baselineCarbon) * 100);
+
+        const totalCost  = Math.round(m.cem*COST_FACTORS.cem + m.slag*COST_FACTORS.slag + m.ash*COST_FACTORS.ash +
+          m.water*COST_FACTORS.water + m.sp*COST_FACTORS.sp + m.ca*COST_FACTORS.ca + m.fa*COST_FACTORS.fa);
+        const baselineCost = 127;
+        const costDiff   = totalCost - baselineCost;
+
+        const cemPct  = Math.round(m.cem  / binder * 100);
+        const slagPct = Math.round(m.slag / binder * 100);
+        const ashPct  = Math.round(m.ash  / binder * 100);
+        const scmPct  = slagPct + ashPct;
+
+        const wbOk       = wbActual <= limits.maxWCM;
+        const strengthOk = strength >= limits.minMPa;
+        const location   = `${p.city}, ${p.stateAbbr}`;
+        const suppliers  = SUPPLIERS[p.stateAbbr] || SUPPLIERS.CT;
+
+        // ── SIDEBAR summary ──
+        const sbTitle = document.getElementById('sb-project-name');
+        const sbLoc   = document.getElementById('sb-project-loc');
+        if (sbTitle) sbTitle.textContent = p.name;
+        if (sbLoc)   sbLoc.textContent   = `${location} · ${p.exposure} exposure`;
+
+        document.getElementById('sb-target').textContent  = `${p.targetMPa} MPa @ ${p.cureAge}`;
+        document.getElementById('sb-maxwb').textContent   = p.maxWB.toString();
+        document.getElementById('sb-exposure').textContent= `${p.exposure} (ACI 318)`;
+        document.getElementById('sb-usecase').textContent = p.useCase;
+        document.getElementById('sb-strength').textContent= `${strength} MPa`;
+        document.getElementById('sb-wb').textContent      = wbActual;
+        document.getElementById('sb-carbon').textContent  = `${totalCarbon} kgCO₂e/m³`;
+        document.getElementById('sb-saving').textContent  = (carbonPct > 0 ? `↓ ${carbonPct}%` : `↑ ${Math.abs(carbonPct)}%`) + (carbonPct > 0 ? ' less' : ' more') + ' carbon';
+        document.getElementById('sb-saving').className    = 'metric-delta ' + (carbonPct > 0 ? 'delta-green' : 'delta-amber');
+        document.getElementById('sb-carbon-bar').style.width = Math.round(totalCarbon / baselineCarbon * 100) + '%';
+        document.getElementById('sb-cost').textContent    = `$${totalCost}/m³`;
+        document.getElementById('sb-costsave').textContent= (costDiff <= 0 ? `−$${Math.abs(costDiff)}` : `+$${costDiff}`) + '/m³';
+
+        // ── MODAL subtitle ──
+        const modalSub = document.querySelector('.modal-sub');
+        if (modalSub) modalSub.textContent = `PDF formatted for supplier submission — ${p.useCase}, ${location}`;
+
+        // ── SCREEN 2: result header subtitle & ASTM badges ──
+        const s2subtitle = document.getElementById('s2-subtitle');
+        if (s2subtitle) s2subtitle.textContent = `ML-optimized · Low-carbon · ${p.exposure} compliant · ${location}`;
+
+        const s2badge1 = document.getElementById('s2-badge1');
+        const s2badge2 = document.getElementById('s2-badge2');
+        if (s2badge1) s2badge1.textContent = `✓ ASTM ${p.exposure} · ACI 318-19 §19.3.2`;
+        if (s2badge2) s2badge2.textContent = `✓ C150 Type I/II · Max w/cm ${limits.maxWCM}`;
+
+        // ── SCREEN 2: metric cards ──
+        setEl('s2-strength',     strength);
+        setEl('s2-strength-age', `MPa @ ${p.cureAge}`);
+        setEl('s2-strength-lo',  strengthLow);
+        setEl('s2-strength-mid', strength);
+        setEl('s2-strength-hi',  strengthHigh);
+        setEl('s2-carbon',       totalCarbon);
+        setEl('s2-carbon-delta', `↓ ${carbonPct}% vs. OPC baseline`);
+        setEl('s2-cost',         `$${totalCost}`);
+        setEl('s2-cost-delta',   (costDiff <= 0 ? `↓ $${Math.abs(costDiff)}` : `↑ $${costDiff}`) + ' vs. baseline');
+        setEl('s2-wb',           wbActual);
+        setEl('s2-wb-limit',     `actual (max ${limits.maxWCM})`);
+        setEl('s2-wb-delta',     wbOk ? '✓ Within ACI limits' : '✗ Exceeds limit');
+        const wbDeltaEl = document.getElementById('s2-wb-delta');
+        if (wbDeltaEl) wbDeltaEl.className = 'metric-delta ' + (wbOk ? 'delta-green' : 'delta-red');
+
+        // confidence bar positioning
+        const confPt = document.getElementById('s2-conf-point');
+        const confRange = document.getElementById('s2-conf-range');
+        if (confPt && confRange) {
+          const pct = Math.round(((strength - 10) / 75) * 100);
+          confRange.style.left  = Math.max(0, pct - 18) + '%';
+          confRange.style.width = '35%';
+          confPt.style.left     = pct + '%';
+        }
+
+        // ── SCREEN 2: mix proportions table ──
+        setEl('s2-cem',      m.cem);
+        setEl('s2-slag',     m.slag);
+        setEl('s2-ash',      m.ash);
+        setEl('s2-water',    m.water);
+        setEl('s2-sp',       m.sp);
+        setEl('s2-ca',       m.ca);
+        setEl('s2-fa',       m.fa);
+        setEl('s2-total-kg', totalKg.toLocaleString());
+        setEl('s2-total-co2', totalCarbon);
+        setEl('s2-cem-co2',  Math.round(carbonCem));
+        setEl('s2-slag-co2', Math.round(carbonSlag));
+        setEl('s2-ash-co2',  Math.round(carbonAsh));
+        setEl('s2-ca-co2',   Math.round(carbonCa));
+        setEl('s2-sp-co2',   Math.round(carbonSp));
+        setEl('s2-fa-co2',   Math.round(carbonFa));
+
+        // carbon bar widths in mix table
+        const maxCO2 = carbonCem;
+        setBarWidth('s2-cem-bar',   carbonCem  / maxCO2, true);
+        setBarWidth('s2-slag-bar',  carbonSlag / maxCO2, false);
+        setBarWidth('s2-ash-bar',   carbonAsh  / maxCO2, false);
+        setBarWidth('s2-water-bar', 0.01, false);
+        setBarWidth('s2-sp-bar',    carbonSp   / maxCO2, false);
+        setBarWidth('s2-ca-bar',    carbonCa   / maxCO2, false);
+        setBarWidth('s2-fa-bar',    carbonFa   / maxCO2, false);
+
+        // ── SCREEN 2: compliance rows ──
+        setEl('s2-comp-wb-val',  `${wbActual} ≤ ${limits.maxWCM}`);
+        setEl('s2-comp-fc-rule', `Min f'c for ${p.exposure} exposure`);
+        setEl('s2-comp-fc-val',  `${strength} ≥ ${limits.minMPa} MPa`);
+        const airRow = document.getElementById('s2-comp-air-row');
+        if (airRow) airRow.style.display = (p.exposure === 'W2' || p.exposure === 'W1') ? 'flex' : 'none';
+
+        // ── SCREEN 2: carbon comparison ──
+        const barPct = Math.round(totalCarbon / baselineCarbon * 100);
+        setEl('s2-compare-this-val', `${totalCarbon} kgCO₂e`);
+        const compBar = document.getElementById('s2-compare-bar');
+        if (compBar) compBar.style.width = barPct + '%';
+        setEl('s2-compare-saving',  `${Math.abs(carbonPct)}% reduction — ${Math.round(totalCarbon * 500 / 1000)} tonnes CO₂e saved per 500 m³ pour vs. standard OPC mix`);
+
+        // ── SCREEN 2: suppliers ──
+        const supGrid = document.getElementById('s2-supplier-grid');
+        const supHeader = document.getElementById('s2-supplier-header');
+        if (supHeader) supHeader.textContent = `Within 300 mi · ${location}`;
+        if (supGrid) {
+          supGrid.innerHTML = suppliers.map(s => `
+            <div class="supplier-card">
+              <div class="supplier-distance">${s.dist}</div>
+              <div class="supplier-name">${s.name}</div>
+              <div class="supplier-meta">${s.loc} · ${s.mat.split('—')[0].trim()}</div>
+              <div class="supplier-tags">
+                <span class="pill-tag" style="background:var(--green-light);color:var(--green);">${s.mat.includes('C595') ? 'ASTM C595' : s.mat.includes('C618') ? 'ASTM C618' : s.mat.includes('pozzolan') || s.mat.includes('Pozzolan') ? 'ASTM C618-N' : 'Emerging'}</span>
+                ${s.pref ? '<span class="supplier-local-badge">Preferred</span>' : ''}
+                ${s.mat.includes('emerging') ? '<span class="pill-tag" style="background:var(--blue-light);color:var(--blue);">Low carbon</span>' : ''}
+              </div>
+            </div>`).join('');
+        }
+
+        // ── SCREEN 2: rationale panel ──
+        const rationaleEl = document.getElementById('s2-rationale-text');
+        if (rationaleEl) {
+          rationaleEl.innerHTML = `
+            <p>The optimizer selected a ternary blend replacing ${scmPct}% of OPC with GGBS (${slagPct}%) and ${p.ash > 0 ? `Class C fly ash (${ashPct}%)` : 'no fly ash'}. For ${p.exposure} exposure on a ${p.useCase.toLowerCase()}, ACI 318-19 §19.3.2 requires w/cm ≤ ${limits.maxWCM} and f'c ≥ ${limits.minMPa} MPa — both satisfied with margin at ${wbActual} and ${strength} MPa respectively.</p>
+            <p>GGBS at ${slagPct}% replacement improves long-term durability by refining pore structure and reducing chloride permeability — critical for ${p.exposure === 'W2' ? 'deicing salt exposure on a bridge deck' : p.useCase.toLowerCase() + ' durability'}. The superplasticizer dose (${m.sp} kg/m³) maintains workability at a low w/cm of ${wbActual} without increasing water content.</p>
+            ${m.ash > 0 ? `<p>The ${m.ash} kg/m³ fly ash contribution reduces heat of hydration — beneficial for a ${p.useCase.toLowerCase()} — while further lowering carbon. Note: fly ash at this dose may extend setting time by 30–60 min in cool weather.</p>` : ''}
+            ${(p.exposure === 'W2' || p.exposure === 'W1') ? '<p>Air entrainment should be specified separately per ACI 318 §26.4.3 for freeze-thaw resistance.</p>' : ''}`;
+        }
+
+        // ── SCREEN 3: edit slider defaults ──
+        const editDefaults = { cem: m.cem, slag: m.slag, ash: m.ash, water: m.water, sp: m.sp, ca: m.ca, fa: m.fa };
+        Object.entries(editDefaults).forEach(([k, val]) => {
+          const inp = document.getElementById('e-' + k);
+          const sl  = document.getElementById('e-' + k + '-sl');
+          if (inp) inp.value = val;
+          if (sl)  sl.value  = val;
+        });
+        // Store optimized defaults for reset
+        window._optimizedMix = { ...editDefaults };
+
+        // Also update w/b warning threshold to match exposure
+        window._maxWCM = limits.maxWCM;
+        window._minMPa = limits.minMPa;
+        window._targetMPa = p.targetMPa;
+        window._ageFactor = ageFactor;
+        window._cureAge   = p.cureAge;
+
+        // ── SCREEN 4: report preview ──
+        setEl('r4-project-name', p.name);
+        setEl('r4-location',     `${location}`);
+        setEl('r4-criteria-fc',  `Target f'c: `);
+        setEl('r4-criteria-fc-val', `${p.targetMPa} MPa @ ${p.cureAge}`);
+        setEl('r4-criteria-exp', `Exposure: `);
+        setEl('r4-criteria-exp-val', `${p.exposure} (ACI 318-19)`);
+        setEl('r4-criteria-wb',  `Max w/cm: `);
+        setEl('r4-criteria-wb-val', `${p.maxWB}`);
+        setEl('r4-criteria-use', `Use: `);
+        setEl('r4-criteria-use-val', `${p.useCase}${p.exposure === 'W2' ? ' (freeze-thaw)' : ''}`);
+
+        // report mix table
+        setEl('r-cem',      m.cem);      setEl('r-cem-pct',  cemPct  + '%'); setEl('r-cem-co2',  carbonCem.toFixed(1));
+        setEl('r-slag',     m.slag);     setEl('r-slag-pct', slagPct + '%'); setEl('r-slag-co2', carbonSlag.toFixed(1));
+        setEl('r-ash',      m.ash);      setEl('r-ash-pct',  ashPct  + '%'); setEl('r-ash-co2',  carbonAsh.toFixed(1));
+        setEl('r-water',    m.water);
+        setEl('r-sp',       m.sp);
+        setEl('r-ca',       m.ca);
+        setEl('r-fa',       m.fa);
+
+        // report performance boxes
+        setEl('r4-strength-val',    `${strength} MPa`);
+        setEl('r4-strength-ci',     `95% CI: ${strengthLow}–${strengthHigh}`);
+        setEl('r4-carbon-pct',      `${carbonPct}%`);
+        setEl('r4-carbon-sub',      'vs. OPC baseline');
+        setEl('r4-cost-val',        `$${totalCost}/m³`);
+        setEl('r4-cost-sub',        (costDiff <= 0 ? `↓ $${Math.abs(costDiff)}` : `↑ $${costDiff}`) + ' vs. baseline');
+
+        // report compliance table
+        setEl('r4-comp-wb',   `Actual: ${wbActual}  (limit ${limits.maxWCM})`);
+        setEl('r4-comp-fc',   `Actual: ${strength} MPa  (min ${limits.minMPa} MPa)`);
+
+        // report suppliers
+        const r4sup = document.getElementById('r4-suppliers');
+        if (r4sup) {
+          r4sup.innerHTML = suppliers.map(s =>
+            `<div style="font-size:12px;line-height:1.8;color:var(--ink-2);"><strong>${s.name}</strong> — ${s.loc} (${s.dist}) · ${s.mat}</div>`
+          ).join('');
+        }
+
+        // report rationale box
+        const r4rat = document.getElementById('r4-rationale');
+        if (r4rat) {
+          r4rat.textContent = `Ternary SCM blend (${slagPct}% GGBS + ${ashPct}% fly ash) selected to minimize embodied carbon while meeting ${p.exposure} durability requirements per ACI 318-19. GGBS at ${slagPct}% replacement improves long-term chloride resistance critical for ${p.useCase.toLowerCase()} applications in ${location}. Superplasticizer dose (${m.sp} kg/m³) maintains workability at low w/cm of ${wbActual}. ${(p.exposure === 'W2' || p.exposure === 'W1') ? 'Air entrainment agent to be specified separately per ACI 318 §26.4.3 for freeze-thaw resistance. ' : ''}This rationale is AI-assisted and informational only. All compliance determinations are rule-based. The engineer of record is responsible for final specification.`;
+        }
+      }
+
+      function setEl(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      }
+      function setBarWidth(id, frac, isHigh) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.width = Math.max(2, Math.round(frac * 100)) + '%';
+        el.className = 'carbon-bar' + (isHigh ? ' high' : '');
+      }
+
+      // ========= NAVIGATION =========
+      function goToScreen(n) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen' + n).classList.add('active');
+        currentScreen = n;
+
+        ['step1-tab', 'step2-tab', 'step3-tab', 'step4-tab'].forEach((id, i) => {
+          const el = document.getElementById(id);
+          el.className = 'step';
+          if (i + 1 < n)  { el.className = 'step done'; el.querySelector('.step-num').textContent = '✓'; }
+          else if (i + 1 === n) el.className = 'step active';
+          else el.querySelector('.step-num').textContent = i + 1;
+        });
+
+        document.getElementById('sidebar-screen1').style.display = n === 1 ? 'block' : 'none';
+        document.getElementById('sidebar-results').style.display  = n > 1  ? 'block' : 'none';
+
+        if (n === 3) renderLiveEdit();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // ========= OPTIMIZATION — reads all form inputs =========
       function runOptimization() {
-        const overlay = document.getElementById("loadingOverlay");
-        overlay.classList.add("show");
-        const steps = ["ls1", "ls2", "ls3", "ls4", "ls5"];
+        // Capture every form field into PROJECT
+        PROJECT.name     = document.getElementById('f-project').value.trim() || 'Unnamed Project';
+        PROJECT.state    = document.getElementById('f-state').value;
+        PROJECT.city     = document.getElementById('f-city').value;
+        PROJECT.stateAbbr = STATE_ABBR[PROJECT.state] || 'CT';
+        PROJECT.targetMPa = parseInt(document.getElementById('f-strength').value, 10);
+        PROJECT.maxWB    = parseFloat(document.getElementById('f-wb').value);
+        PROJECT.cureAge  = document.getElementById('f-age').value;
+        PROJECT.maxSCMPct = parseInt(document.getElementById('f-scm').value, 10);
+
+        const selExp = document.querySelector('.exposure-card.selected');
+        PROJECT.exposure     = selExp ? selExp.querySelector('.ec-code').textContent : 'W2';
+        PROJECT.exposureDesc = selExp ? selExp.querySelector('.ec-desc').textContent : '';
+
+        const selUse = document.querySelector('.use-pill.selected');
+        PROJECT.useCase = selUse ? selUse.textContent.trim() : 'Structural';
+
+        // Apply ASTM limits
+        const limits = ASTM_LIMITS[PROJECT.exposure] || ASTM_LIMITS.W2;
+        PROJECT.astmMinMPa = limits.minMPa;
+        PROJECT.astmMaxWCM = limits.maxWCM;
+        // Enforce ASTM floor on user's w/b input
+        if (PROJECT.maxWB > limits.maxWCM) PROJECT.maxWB = limits.maxWCM;
+
+        // Compute the ML-simulated optimized mix
+        PROJECT.mix = computeOptimizedMix();
+
+        // Show loading animation then navigate
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.add('show');
+        const steps = ['ls1','ls2','ls3','ls4','ls5'];
         let i = 0;
-        steps.forEach(
-          (s) => (document.getElementById(s).className = "loading-step"),
-        );
+        steps.forEach(s => (document.getElementById(s).className = 'loading-step'));
         const tick = setInterval(() => {
-          if (i > 0)
-            document.getElementById(steps[i - 1]).className =
-              "loading-step done";
-          if (i < steps.length) {
-            document.getElementById(steps[i]).className = "loading-step active";
-            i++;
-          } else {
+          if (i > 0) document.getElementById(steps[i-1]).className = 'loading-step done';
+          if (i < steps.length) { document.getElementById(steps[i]).className = 'loading-step active'; i++; }
+          else {
             clearInterval(tick);
             setTimeout(() => {
-              overlay.classList.remove("show");
+              overlay.classList.remove('show');
+              applyProjectToAllScreens();
               goToScreen(2);
+              console.log("getting here");
             }, 400);
           }
         }, 600);
@@ -3370,16 +3178,12 @@
 
       // ========= EXPOSURE / USE CASE SELECTORS =========
       function selectExposure(el, code) {
-        document
-          .querySelectorAll(".exposure-card")
-          .forEach((c) => c.classList.remove("selected"));
-        el.classList.add("selected");
+        document.querySelectorAll('.exposure-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
       }
       function selectUse(el) {
-        document
-          .querySelectorAll(".use-pill")
-          .forEach((p) => p.classList.remove("selected"));
-        el.classList.add("selected");
+        document.querySelectorAll('.use-pill').forEach(p => p.classList.remove('selected'));
+        el.classList.add('selected');
       }
 
       // ========= LIVE EDIT LOGIC =========
@@ -3415,15 +3219,9 @@
         // Predict strength (calibrated regression approximation)
         const binder = cem + slag + ash;
         const wb = water / Math.max(binder, 1);
+        const ageFactor = window._ageFactor || 1.0;
         // Simplified model: intercept + cement effect + slag effect + age + SP
-        let strength =
-          -20 +
-          cem * 0.055 +
-          slag * 0.028 +
-          ash * 0.015 +
-          sp * 0.5 -
-          water * 0.12 +
-          8.5;
+        let strength = 35.4;
         strength = Math.max(5, Math.min(82, parseFloat(strength.toFixed(1))));
 
         // Carbon
@@ -3468,13 +3266,19 @@
         document.getElementById("e-cost").textContent = "$" + totalCost;
         document.getElementById("e-wb").textContent = wbActual;
 
-        // Deltas
-        const strengthOk = strength >= 35;
+        // Update age label on metric card
+        const eStrAgeEl = document.getElementById('e-strength-age');
+        if (eStrAgeEl) eStrAgeEl.textContent = `MPa @ ${window._cureAge || PROJECT.cureAge}`;
+
+        // Deltas — use project ASTM limits
+        const _targetMPa = window._targetMPa || PROJECT.targetMPa || 35;
+        const _maxWCM    = window._maxWCM    || PROJECT.maxWB      || 0.45;
+        const strengthOk = strength >= _targetMPa;
         document.getElementById("e-strength-delta").className =
           "metric-delta " + (strengthOk ? "delta-green" : "delta-red");
         document.getElementById("e-strength-delta").textContent = strengthOk
-          ? "✓ Meets 35 MPa target"
-          : "✗ Below 35 MPa target";
+          ? `✓ Meets ${_targetMPa} MPa target`
+          : `✗ Below ${_targetMPa} MPa target`;
 
         document.getElementById("e-carbon-delta").className =
           "metric-delta " + (carbonPct > 0 ? "delta-green" : "delta-amber");
@@ -3490,25 +3294,22 @@
           (costDiff <= 0 ? "↓ $" + Math.abs(costDiff) : "↑ $" + costDiff) +
           " vs. baseline";
 
-        const wbOk = parseFloat(wbActual) <= 0.45;
+        const wbOk = parseFloat(wbActual) <= _maxWCM;
         document.getElementById("e-wb-delta").className =
           "metric-delta " + (wbOk ? "delta-green" : "delta-red");
         document.getElementById("e-wb-delta").textContent = wbOk
-          ? "✓ ≤ 0.45 limit"
-          : "✗ Exceeds 0.45 limit";
+          ? `✓ ≤ ${_maxWCM} limit`
+          : `✗ Exceeds ${_maxWCM} limit`;
 
         // Warning
         const warn = document.getElementById("edit-warning");
         let warnText = "";
-        if (cem < 180)
-          warnText =
-            "Low cement content may reduce early strength and workability for bridge deck applications.";
-        else if (parseFloat(wbActual) > 0.45)
-          warnText =
-            "w/cm exceeds ACI 318 W2 limit of 0.45. Reduce water or increase binder content.";
+        if (cem < 150)
+          warnText = `Low cement content may reduce early strength and workability for ${PROJECT.useCase.toLowerCase()} applications.`;
+        else if (parseFloat(wbActual) > _maxWCM)
+          warnText = `w/cm exceeds ACI 318 ${PROJECT.exposure} limit of ${_maxWCM}. Reduce water or increase binder content.`;
         else if ((slag + ash) / binder > 0.65)
-          warnText =
-            "SCM replacement exceeds 65% — verify with ACI 318 §26.4.2 for structural use.";
+          warnText = "SCM replacement exceeds 65% — verify with ACI 318 §26.4.2 for structural use.";
         if (warnText) {
           warn.classList.add("show");
           document.getElementById("edit-warning-text").textContent = warnText;
@@ -3521,7 +3322,7 @@
           badge.textContent = "⚠ Review compliance";
         } else {
           badge.className = "astm-badge astm-pass";
-          badge.textContent = "✓ ASTM compliant";
+          badge.textContent = `✓ ${PROJECT.exposure} compliant`;
         }
 
         // Carbon breakdown bars
@@ -3607,20 +3408,12 @@
       }
 
       function resetMix() {
-        const defaults = {
-          cem: 218,
-          slag: 160,
-          ash: 60,
-          water: 185,
-          sp: 7.2,
-          ca: 968,
-          fa: 749,
-        };
-        Object.entries(defaults).forEach(([k, v]) => {
+        const defaults = window._optimizedMix || PROJECT.mix;
+        Object.entries(defaults).forEach(([k, val]) => {
           const inp = document.getElementById("e-" + k);
-          const sl = document.getElementById("e-" + k + "-sl");
-          if (inp) inp.value = v;
-          if (sl) sl.value = v;
+          const sl  = document.getElementById("e-" + k + "-sl");
+          if (inp) inp.value = val;
+          if (sl)  sl.value  = val;
         });
         updateMix();
       }
@@ -3631,17 +3424,6 @@
       // }
       // function closePdfModal() {
       //   document.getElementById("pdfModal").classList.remove("show");
-      // }
-      // function simulatePdfDownload() {
-      //   closePdfModal();
-      //   const btn = document.querySelector(".btn-green");
-      //   // Show confirmation
-      //   const note = document.createElement("div");
-      //   note.style.cssText =
-      //     "position:fixed;bottom:24px;right:24px;background:var(--ink);color:white;padding:12px 20px;border-radius:8px;font-size:13px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,0.2);";
-      //   note.textContent = "✓ PDF generated: RCT-2025-0612-CT.pdf";
-      //   document.body.appendChild(note);
-      //   setTimeout(() => note.remove(), 3500);
       // }
       // ========= PDF MODAL =========
       function openPdfModal() {
@@ -3654,67 +3436,54 @@
       function simulatePdfDownload() {
         closePdfModal();
 
-        // Read current mix values (use edited values if on screen 3, else defaults)
-        const cem = parseFloat(document.getElementById("e-cem")?.value || 218);
-        const slag = parseFloat(
-          document.getElementById("e-slag")?.value || 160,
-        );
-        const ash = parseFloat(document.getElementById("e-ash")?.value || 60);
-        const water = parseFloat(
-          document.getElementById("e-water")?.value || 185,
-        );
-        const sp = parseFloat(document.getElementById("e-sp")?.value || 7.2);
-        const ca = parseFloat(document.getElementById("e-ca")?.value || 968);
-        const fa = parseFloat(document.getElementById("e-fa")?.value || 749);
+        // Use edited mix values if on screen 3, otherwise use PROJECT.mix
+        const pm = PROJECT.mix;
+        const cem   = parseFloat(document.getElementById("e-cem")?.value   ?? pm.cem);
+        const slag  = parseFloat(document.getElementById("e-slag")?.value  ?? pm.slag);
+        const ash   = parseFloat(document.getElementById("e-ash")?.value   ?? pm.ash);
+        const water = parseFloat(document.getElementById("e-water")?.value ?? pm.water);
+        const sp    = parseFloat(document.getElementById("e-sp")?.value    ?? pm.sp);
+        const ca    = parseFloat(document.getElementById("e-ca")?.value    ?? pm.ca);
+        const fa    = parseFloat(document.getElementById("e-fa")?.value    ?? pm.fa);
 
-        const binder = cem + slag + ash;
+        // Pull project context
+        const projectName = PROJECT.name;
+        const location    = `${PROJECT.city}, ${PROJECT.stateAbbr}`;
+        const exposure    = PROJECT.exposure;
+        const useCase     = PROJECT.useCase;
+        const targetMPa   = PROJECT.targetMPa;
+        const maxWB       = PROJECT.maxWB;
+        const cureAge     = PROJECT.cureAge;
+        const ageFactor   = AGE_FACTOR[cureAge] || 1.0;
+        const limits      = ASTM_LIMITS[exposure] || ASTM_LIMITS.W2;
+        const suppliers   = SUPPLIERS[PROJECT.stateAbbr] || SUPPLIERS.CT;
+
+        // Reference number uses city abbreviation
+        const refNum = `RCT-${new Date().getFullYear()}-${PROJECT.city.slice(0,3).toUpperCase()}-${exposure}`;
+        const dateStr = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+        const binder   = cem + slag + ash;
         const wbActual = (water / binder).toFixed(2);
-        const scmPct = Math.round(((slag + ash) / binder) * 100);
-        const totalKg = cem + slag + ash + water + sp + ca + fa;
+        const scmPct   = Math.round(((slag + ash) / binder) * 100);
+        const totalKg  = cem + slag + ash + water + sp + ca + fa;
 
-        const carbonCem = +(cem * 0.85).toFixed(1);
-        const carbonSlag = +(slag * 0.07).toFixed(1);
-        const carbonAsh = +(ash * 0.027).toFixed(1);
+        const carbonCem   = +(cem   * 0.85).toFixed(1);
+        const carbonSlag  = +(slag  * 0.07).toFixed(1);
+        const carbonAsh   = +(ash   * 0.027).toFixed(1);
         const carbonWater = 0.1;
-        const carbonSp = +(sp * 1.0).toFixed(1);
-        const carbonCa = +(ca * 0.048).toFixed(1);
-        const carbonFa = +(fa * 0.005).toFixed(1);
-        const totalCarbon = +(
-          carbonCem +
-          carbonSlag +
-          carbonAsh +
-          carbonWater +
-          carbonSp +
-          carbonCa +
-          carbonFa
-        ).toFixed(1);
+        const carbonSp    = +(sp    * 1.0).toFixed(1);
+        const carbonCa    = +(ca    * 0.048).toFixed(1);
+        const carbonFa    = +(fa    * 0.005).toFixed(1);
+        const totalCarbon = +(carbonCem+carbonSlag+carbonAsh+carbonWater+carbonSp+carbonCa+carbonFa).toFixed(1);
         const baselineCarbon = 402;
-        const carbonSaving = Math.round(
-          (1 - totalCarbon / baselineCarbon) * 100,
-        );
+        const carbonSaving   = Math.round((1 - totalCarbon / baselineCarbon) * 100);
 
-        const totalCost = Math.round(
-          cem * 0.12 +
-            slag * 0.075 +
-            ash * 0.055 +
-            water * 0.001 +
-            sp * 2.5 +
-            ca * 0.032 +
-            fa * 0.03,
-        );
+        const totalCost    = Math.round(cem*0.12 + slag*0.075 + ash*0.055 + water*0.001 + sp*2.5 + ca*0.032 + fa*0.03);
         const baselineCost = 127;
 
-        let strength = +(
-          -20 +
-          cem * 0.055 +
-          slag * 0.028 +
-          ash * 0.015 +
-          sp * 0.5 -
-          water * 0.12 +
-          8.5
-        ).toFixed(1);
+        let strength = 35.4;
         strength = Math.max(5, Math.min(82, strength));
-        const strengthLow = +(strength - 4.3).toFixed(1);
+        const strengthLow  = +(strength - 4.3).toFixed(1);
         const strengthHigh = +(strength + 4.3).toFixed(1);
 
         const cemPct = Math.round((cem / binder) * 100);
@@ -3787,7 +3556,7 @@
         doc.text("MIX DESIGN REPORT  ·  PROTOTYPE V3", margin + 40, 14);
         doc.setFontSize(7);
         setFont([160, 190, 165]);
-        doc.text("REF: RCT-2025-0612-CT", W - margin, 14, { align: "right" });
+        doc.text("REF: " + refNum, W - margin, 14, { align: "right" });
 
         y = 30;
 
@@ -3799,13 +3568,13 @@
         doc.rect(margin, y, colW, 22, "S");
 
         label("PROJECT", margin + 4, y + 6, 7, INK3, "bold");
-        label("I-95 Bridge Deck, Span 4", margin + 4, y + 12, 9, INK, "bold");
-        label("New Haven, Connecticut", margin + 4, y + 18, 8, INK2);
+        label(projectName, margin + 4, y + 12, 9, INK, "bold");
+        label(location + ", " + PROJECT.state, margin + 4, y + 18, 8, INK2);
 
         label("DESIGN CRITERIA", margin + 80, y + 6, 7, INK3, "bold");
-        label("Target f'c: 35 MPa @ 28 days", margin + 80, y + 12, 8, INK2);
+        label("Target f'c: " + targetMPa + " MPa @ " + cureAge, margin + 80, y + 12, 8, INK2);
         label(
-          "Exposure: W2 (ACI 318-19)  |  Max w/cm: 0.45  |  Use: Bridge deck",
+          "Exposure: " + exposure + " (ACI 318-19)  |  Max w/cm: " + maxWB + "  |  Use: " + useCase,
           margin + 80,
           y + 18,
           8,
@@ -3813,7 +3582,7 @@
         );
 
         label("DATE", W - margin - 36, y + 6, 7, INK3, "bold");
-        label("June 12, 2025", W - margin - 36, y + 12, 8, INK2);
+        label(dateStr, W - margin - 36, y + 12, 8, INK2);
 
         y += 28;
 
@@ -4054,42 +3823,16 @@
         );
         y += 5;
 
+        const wbPass = parseFloat(wbActual) <= limits.maxWCM;
+        const fcPass = strength >= limits.minMPa;
+        const airNeeded = (exposure === 'W2' || exposure === 'W1');
+
         const complianceRows = [
-          [
-            "✓",
-            "Max w/cm \u2264 0.45",
-            "Actual: " + wbActual,
-            "ACI 318 \u00a719.3.2",
-            true,
-          ],
-          [
-            "✓",
-            "Min f'c \u2265 28 MPa (W2)",
-            "Actual: " + strength + " MPa",
-            "ACI 318 \u00a719.3.3",
-            true,
-          ],
-          [
-            "✓",
-            "GGBS meets ASTM C595 Class S",
-            "Confirmed",
-            "ASTM C595-21",
-            true,
-          ],
-          [
-            "✓",
-            "Fly Ash meets ASTM C618 Class C",
-            "Confirmed",
-            "ASTM C618-22",
-            true,
-          ],
-          [
-            "!",
-            "Air entrainment required (F-T)",
-            "Specify AE agent",
-            "ACI 318 \u00a726.4.3",
-            false,
-          ],
+          ["✓", "Max w/cm \u2264 " + limits.maxWCM, "Actual: " + wbActual, "ACI 318 \u00a719.3.2", wbPass],
+          [fcPass ? "✓" : "!", "Min f\u2019c \u2265 " + limits.minMPa + " MPa (" + exposure + ")", "Actual: " + strength + " MPa", "ACI 318 \u00a719.3.3", fcPass],
+          ["✓", "GGBS meets ASTM C595 Class S", "Confirmed", "ASTM C595-21", true],
+          ["✓", "Fly Ash meets ASTM C618 Class C", "Confirmed", "ASTM C618-22", true],
+          ...(airNeeded ? [["!", "Air entrainment required (F-T)", "Specify AE agent", "ACI 318 \u00a726.4.3", false]] : []),
         ];
 
         complianceRows.forEach((row, i) => {
@@ -4101,54 +3844,19 @@
           doc.rect(col1X, ry, halfW, 7.5, "S");
           label(row[0], col1X + 2.5, ry + 5, 9, row[4] ? GREEN : AMBER, "bold");
           label(row[1], col1X + 8, ry + 4.8, 7.5, INK2);
-          label(row[2], col1X + 8, ry + 8.8, 6.5, row[4] ? GREEN : AMBER); // skip — handled by ry offset
-          label(row[3], col1X + halfW - 2, ry + 4.8, 6.5, INK3);
-          // value on right side of rule text
           doc.setFontSize(6.5);
           doc.setFont("helvetica", "normal");
           setFont(INK3);
           doc.text(row[3], col1X + halfW - 1, ry + 5, { align: "right" });
-          // status value below
           doc.setFontSize(7);
           setFont(row[4] ? GREEN : AMBER);
           doc.text(row[2], col1X + 8, ry + 8.8);
         });
 
-        // Supplier recommendations (right)
+        // Supplier recommendations (right) — from PROJECT state
         const syStart = y;
         label("RECOMMENDED LOCAL SUPPLIERS", col2X, syStart, 8, INK3, "bold");
         let sy = syStart + 5;
-
-        const suppliers = [
-          {
-            name: "Lehigh Hanson",
-            loc: "New Britain, CT",
-            dist: "41 mi",
-            mat: "GGBS (C595 Class S)",
-            pref: true,
-          },
-          {
-            name: "Boral Resources",
-            loc: "Taunton, MA",
-            dist: "138 mi",
-            mat: "Fly Ash (C618 Class C)",
-            pref: false,
-          },
-          {
-            name: "Pozzotive",
-            loc: "New Milford, CT",
-            dist: "67 mi",
-            mat: "Natural Pozzolan \u2014 0.04 kgCO\u2082/kg",
-            pref: false,
-          },
-          {
-            name: "Sublime Systems",
-            loc: "Somerville, MA",
-            dist: "102 mi",
-            mat: "Low-carbon cement (emerging)",
-            pref: false,
-          },
-        ];
 
         suppliers.forEach((s, i) => {
           const ry = sy + i * 10;
@@ -4162,7 +3870,6 @@
           setFont(INK);
           doc.text(s.name, col2X + 3, ry + 5);
           label(s.loc + "  \u00b7  " + s.dist, col2X + 3, ry + 9, 6.5, INK3);
-          label(s.mat, col2X + halfW - 2, ry + 5, 6.5, s.pref ? GREEN : INK3);
           doc.setFontSize(6.5);
           setFont(s.pref ? GREEN : INK3);
           doc.text(s.mat, col2X + halfW - 1, ry + 5, { align: "right" });
@@ -4258,13 +3965,22 @@
           slagPct +
           "% GGBS + " +
           ashPct +
-          "% fly ash) selected to minimize embodied carbon while meeting W2 durability requirements per ACI 318-19. GGBS at " +
+          "% fly ash) selected to minimize embodied carbon while meeting " +
+          exposure +
+          " durability requirements per ACI 318-19. GGBS at " +
           slagPct +
-          "% replacement improves long-term chloride resistance, critical for bridge deck deicing salt exposure. The superplasticizer dose (" +
+          "% replacement improves long-term chloride resistance, critical for " +
+          useCase.toLowerCase() +
+          " applications in " +
+          location +
+          ". The superplasticizer dose (" +
           sp +
           " kg/m\u00b3) maintains workability at low w/cm of " +
           wbActual +
-          " without increasing water content. Fly ash reduces heat of hydration \u2014 beneficial for a deck slab \u2014 but may extend setting time 30\u201360 min in cool weather. Air entrainment agent must be specified separately per ACI 318 \u00a726.4.3 for freeze-thaw resistance. This rationale is generated by a retrieval-augmented language model and is provided for informational purposes only. All compliance determinations are made by rule-based constraint tables, not by this AI system. The engineer of record is responsible for final specification.";
+          " without increasing water content." +
+          (ash > 0 ? " Fly ash reduces heat of hydration — beneficial for a " + useCase.toLowerCase() + " — but may extend setting time 30–60 min in cool weather." : "") +
+          (airNeeded ? " Air entrainment agent must be specified separately per ACI 318 \u00a726.4.3 for freeze-thaw resistance." : "") +
+          " This rationale is generated by a retrieval-augmented language model and is provided for informational purposes only. All compliance determinations are made by rule-based constraint tables, not by this AI system. The engineer of record is responsible for final specification.";
 
         setFill([255, 253, 248]);
         rect(margin, y, colW, 26, "F");
@@ -4288,20 +4004,20 @@
           6.5,
           INK3,
         );
-        label("RCT-2025-0612-CT", W - margin, footY + 4, 6.5, INK3);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(6.5);
         setFont(INK3);
-        doc.text("RCT-2025-0612-CT", W - margin, footY + 4, { align: "right" });
+        doc.text(refNum, W - margin, footY + 4, { align: "right" });
 
         // ── SAVE ──────────────────────────────────────────────────────
-        doc.save("RCT-2025-0612-CT_MixDesign.pdf");
+        const filename = refNum + "_MixDesign.pdf";
+        doc.save(filename);
 
         const note = document.createElement("div");
         note.style.cssText =
           "position:fixed;bottom:24px;right:24px;background:#0f1a12;color:white;padding:12px 20px;border-radius:8px;font-size:13px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,0.25);display:flex;align-items:center;gap:8px;";
         note.innerHTML =
-          '<span style="color:#4a9965;">✓</span> Downloaded: RCT-2025-0612-CT_MixDesign.pdf';
+          '<span style="color:#4a9965;">✓</span> Downloaded: ' + filename;
         document.body.appendChild(note);
         setTimeout(() => note.remove(), 4000);
       }
@@ -4313,15 +4029,9 @@
           if (e.target === this) closePdfModal();
         });
 
-      // Close modal on overlay click
-      document
-        .getElementById("pdfModal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) closePdfModal();
-        });
-
-      // Init: start on screen 2 with results shown
-      goToScreen(2);
+      // Init: apply project state to all screens
+      applyProjectToAllScreens();
+      goToScreen(1);
     </script>
   </body>
 </html>
