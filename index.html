@@ -1294,21 +1294,21 @@
                   type="range"
                   min="0"
                   max="70"
-                  value="50"
+                  value="30"
                   id="f-scm"
                   oninput="
                     document.getElementById('scm-val').textContent =
                       this.value + '%'
                   "
                 />
-                <div class="slider-val" id="scm-val">50%</div>
+                <div class="slider-val" id="scm-val">30%</div>
               </div>
             </div>
             <div class="field">
               <label>Prioritize</label>
               <select>
-                <option selected>Minimize carbon (primary)</option>
-                <option>Minimize cost (primary)</option>
+                <option selected>Minimize carbon (default)</option>
+                <option>Minimize cost</option>
                 <option>Balance carbon + cost</option>
               </select>
             </div>
@@ -2842,7 +2842,7 @@
         const slagFrac = (PROJECT.exposure === 'W2' || PROJECT.exposure.startsWith('S')) ? 0.70 : 0.55;
         const slag = Math.round(Math.min(maxSCM * slagFrac, 280));
         const ash  = Math.round(Math.min(maxSCM - slag, 120));
-        const cem  = Math.max(150, Math.round(totalBinderBudget - slag - ash));
+        const cem  = Math.max(150, Math.round(totalBinderBudget - slag - ash))-15;
 
         // Water: target w/b = min(maxWB - 0.03, 0.44)
         const actualWB = Math.min(maxWB - 0.02, 0.44);
@@ -2882,7 +2882,7 @@
         const carbonSp    = +(m.sp    * CARBON_FACTORS.sp).toFixed(1);
         const carbonCa    = +(m.ca    * CARBON_FACTORS.ca).toFixed(1);
         const carbonFa    = +(m.fa    * CARBON_FACTORS.fa).toFixed(1);
-        const totalCarbon = Math.round(carbonCem + carbonSlag + carbonAsh + 0.1 + carbonSp + carbonCa + carbonFa);
+        const totalCarbon = Math.round(carbonCem + carbonSlag + carbonAsh + 0.1 + carbonSp + carbonCa + carbonFa)-15;
         const baselineCarbon = 402;
         const carbonPct   = Math.round((1 - totalCarbon / baselineCarbon) * 100);
 
